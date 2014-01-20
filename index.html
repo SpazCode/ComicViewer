@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="UFT-8">
+        <title>Comic Viewer</title>
+        <link href = "css/bootstrap.min.css" rel = "stylesheet">
+		<link href = "css/style.css" rel = "stylesheet">
+    </head>
+    <body>
+        <div class= "navbar navbar-inverse navbar-fixed-top">
+            <div class = "container">
+                <p class = "navbar-brand">Comic Viewer</p>
+                
+                <button class = "navbar-toggle" data-toggle = "collapse" data-target =".navHeaderCollapse">
+                    <span class = "icon-bar"></span>
+                    <span class = "icon-bar"></span>
+                    <span class = "icon-bar"></span>
+                </button>
+                
+                <div class = "collapse navbar-collapse navHeaderCollapse">
+                    <ul class = "nav navbar-nav navbar-right">
+                        <li class = "dropdown">
+                            <a href = "#" class = "dropdown-toggle" data-toggle = "dropdown">File<b class = "caret"></b></a>
+                            <ul class = "dropdown-menu">
+                                <li><a href = "#">Open</a></li>
+                                <li><a href = "#">Fullscreen</a></li>
+                                <li><a href = "#">Exit</a></li>
+                            </ul>
+                        </li>
+                        <li class = "dropdown">
+                            <a href = "#" class = "dropdown-toggle" data-toggle = "dropdown">Read<b class = "caret"></b></a>
+                            <ul class = "dropdown-menu">
+                                <li><a href = "#">First Page</a></li>
+                                <li><a href = "#">Last Page</a></li>
+                                <li><a href = "#">Goto</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    
+        <script src="js/app.js"></script>
+        <script src="js/dnd.js"></script>	  
+    </body>
+</html>
