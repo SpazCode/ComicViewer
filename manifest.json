@@ -1,7 +1,7 @@
 {
-    "name": "Comic Viewer", 
-    "version": "0.0.0.1",
-    "manifest_version": 2,
+  "name": "Comic Viewer", 
+  "version": "0.0.0.1",
+  "manifest_version": 2,
 	"offline_enabled": true,
 	"icons": {
         "16": "img/16.png",
@@ -13,6 +13,7 @@
         }
     },
 	"permissions": [
-		"fileSystem"
-	]
+    "storage",
+    {"fileSystem": ["write", "retainEntries"]}
+  ]
 }
