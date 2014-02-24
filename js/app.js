@@ -74,7 +74,7 @@ $('#openbtn').click( function(e) {
     // use local storage to retain access to this file
     chrome.storage.local.set({'chosenFile': chrome.fileSystem.retainEntry(theEntry)});
     theEntry.file(function(file) {
-      reset;
+      reset();
       handleFile(file);
     });
   });
@@ -82,7 +82,7 @@ $('#openbtn').click( function(e) {
 
 function handleFile(file) {
   console.log(file);
-  zip.workerScriptsPath = "js/";
+  zip.workerScriptsPath = "js/lib/";
 
   zip.createReader(new zip.BlobReader(file), function(reader) {
     console.log("Created reader.");
@@ -99,9 +99,9 @@ function handleFile(file) {
 
           dir.getFile(cleanName, {create:true}, function(file) {
             console.log("Yes, I opened "+file.fullPath);
-            images.push({path:file.toURL(), loaded:false})
+            images.push({path:file.toURL(), loaded:false});
   
-            /*entry.getData(new zip.FileWriter(file), function(e) {
+            entry.getData(new zip.FileWriter(file), function(e) {
               done++;
               var perc = Math.floor((done/images.length)*100);
 
@@ -112,11 +112,11 @@ function handleFile(file) {
                 }
               }
 
-              if(done == images.length) loaded;
+              if(done == images.length) loaded();
               else showProgress(images.length);
-            }, errorHandler);*/
+            }, errorHandler);
           }, errorHandler);
-          loaded()
+          loaded();
         }
       });
     });
