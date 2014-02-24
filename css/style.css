@@ -15,11 +15,15 @@ body {
 .zoom:after {
 	content:'/';
 	display:block; 
-	padding 2px 2px; 
+	padding: 2px 2px;
 	position:absolute; 
 	top:0;
 	right:0;
 	color: #fff;
+}
+
+.floating_label {
+  position:absolute; z-index:200; top:50px; left:50px;
 }
 
 .controlbar {
@@ -31,9 +35,9 @@ body {
 }
 
 .controlbutton.left {
-  display: inline-block;
+  display: block;
   padding: 6px 5px;
-  float:left;
+  float: left;
   background:#FFF;
   text-decoration: none !important;
   color:#000;
@@ -42,19 +46,19 @@ body {
 }
 
 .controlbutton.left:hover {
-  display: inline-block;
+  display: block;
   padding: 6px 5px;
   float:left;
   background:#555;
   text-decoration: none !important;
   color:#000;
   cursor: pointer;
-  border: zpx solid transparent;
+  border: 1px solid transparent;
   border-radius: 4px;
 }
 
 .controlbutton.right {
-  display: inline-block;
+  display: block;
   padding: 6px 5px;
   float:right;
   background:#FFF;
@@ -65,7 +69,7 @@ body {
 }
 
 .controlbutton.right:hover {
-  display: inline-block;
+  display: block;
   padding: 6px 5px;
   float:right;
   background:#555;

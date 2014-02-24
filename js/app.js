@@ -114,8 +114,8 @@ function handleFile(file) {
 
               if(done == images.length) loaded();
               else showProgress(images.length);
-            }, errorHandler);
-          }, errorHandler);
+            });
+          }, errorHandler());
           loaded();
         }
       });
@@ -126,6 +126,14 @@ function handleFile(file) {
 }
 
 function loaded() {
+  $('nextbtn').click(function(e) {
+    e.preventDefault();
+    nextPanel();
+  });
+  $('prevbtn').click(function(e) {
+    e.preventDefault();
+    prevPanel();
+  });
   drawPanel(curPanel);
 }
 
@@ -135,10 +143,12 @@ function showProgress() {
 
 function prevPanel() {
   if(curPanel > 0) drawPanel(curPanel-display);
+  console.log(curPanel);
 }
 
 function nextPanel() {
   if(curPanel+display < images.length) drawPanel(curPanel+display);
+  console.log(curPanel);
 }
 
 function drawPanel(num) {
@@ -149,6 +159,8 @@ function drawPanel(num) {
       $(this).hide();
     } else {
       $(this).attr("src",images[num+index].path);
+      $(this).attr("width", "100%");
+      $(this).attr("height", "100%");
       $(this).show();
     }
   });
