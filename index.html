@@ -5,24 +5,22 @@
     <link href = "css/style.css" rel = "stylesheet">
   </head>
   <body>
-    <span class="zoom" id="frame">
-      <img id="image"/>
-      <label id = "page_count">100</label>
-    </span>
+    <label id = "page_count">100</label>
+    <div id="image_display">
+    </div>
     <div class = "controlbar">	
       <div class = "container">
           <a class = "controlbutton left" id="frstbtn">First</a>
           <a class = "controlbutton left" id="nextbtn">Next</a>
           <a class = "controlbutton left" id="prevbtn">Previous</a>
           <a class = "controlbutton left" id="lastbtn">Last</a>
-          <div id="alert"></div>
           <a class = "controlbutton right" id="openbtn">Open</a>
       </div>
     </div> 
     
     <script src="js/lib/zip.js"></script>
+    <script src="js/lib/deflate.js"></script>
     <script src="js/jquery.js"></script>
-    <script src="js/dnd.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>
