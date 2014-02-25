@@ -32,6 +32,7 @@ function loadSettings() {
 
 function init() {
   console.log("init loaded");
+  reset();
   document.addEventListener("keydown", keyHandler, false);
   navigator.webkitTemporaryStorage.requestQuota(20*1024*1024, function(grantedBytes) {
     window.webkitRequestFileSystem(window.TEMPORARY, grantedBytes, onInitFs, errorHandler);
@@ -131,14 +132,14 @@ function handleFile(file) {
               }
 
               if(done == images.length) {
-                last = images.length
+                last = images.length;
                 spread(1);
               }
               else showProgress(images.length);
             });
           }, errorHandler());
           drawPanel(curPanel);
-          last = images.length
+          last = images.length;
           spread(1);
         }
       });
@@ -203,6 +204,15 @@ function drawPanel(num) {
       $(this).show();
     }
   });
+
+  $("#page_count").each(function( index ) {
+    if (num+index >= images.length || num+index < 0) {
+      $(this).hide();
+    } else {
+      $(this).text((curPanel + 1) + "/" + (images.length - 1));
+      $(this).show();
+    }
+  });
 }
 
 function keyHandler(evt) {
@@ -247,7 +257,6 @@ function reset() {
   images = [];
   done = 0;
   display = 1;
-  dir;
   curPanel = 0;
   first = 0;
   last = images.length;
@@ -256,6 +265,8 @@ function reset() {
   $('#nextbtn').click(null);
   $('#prevbtn').click(null);
   $('#lastbtn').click(null);
+  $("#image_display img").hide();
+  $('#page_count').hide();
 }
 
 function hideControls() {

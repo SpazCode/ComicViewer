@@ -97,3 +97,58 @@ body {
    height: 10px;
    border-radius: 10px;
 }
+
+.fitVertical {
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+  height: calc(100% - 41px);
+  width: auto;
+}
+
+.spread2 .fitHorizontal {
+  margin-left: auto;
+  margin-right: auto;
+  height: auto;
+  width: 50%;        
+}
+
+.spread1 .fitHorizontal {
+  margin-left: auto;
+  margin-right: auto;
+  height: auto;
+  width: 100%;
+}
+
+.fitBoth {
+  margin-left: auto;
+  margin-right: auto;
+  width: auto;
+  height: auto;
+  max-height: 100%;
+  max-height: calc(100% - 41px);
+}
+
+.spread1 .fitBoth {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+}
+
+.spread2 .fitBoth {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 50%;
+}
+
+.overlay {
+    z-index:100;
+    position:absolute;    
+    color:white;
+    font-size:24px;
+    font-weight:bold;
+    top:0;
+    left:25;
+    background-color: #000;
+    opacity: 0.4;
+}
