@@ -1,8 +1,8 @@
 console.log("running\n");
 
 // key codes
-var Key = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, 
-A: 65, B: 66, C: 67, D: 68, E: 69, F: 70, G: 71, H: 72, I: 73, J: 74, K: 75, L: 76, M: 77, 
+var Key = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40,
+A: 65, B: 66, C: 67, D: 68, E: 69, F: 70, G: 71, H: 72, I: 73, J: 74, K: 75, L: 76, M: 77,
 N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 89, Z: 90};
 
 var images = [];
@@ -12,6 +12,15 @@ var dir;
 var curPanel = 0;
 var first = 0;
 var last = images.length;
+
+// Positional variables for the image and the window
+var pos = $(this).offset(),
+wX = $(window).scrollLeft(), wY = $(window).scrollTop(),
+wH = $(window).height(), wW = $(window).width(),
+oH = $(this).outerHeight(), oW = $(this).outerWidth();
+
+
+// Set the menu to be visible
 $('#menubar').show();
 
 
@@ -72,7 +81,7 @@ function dropHandler(e) {
 
 $('#openbtn').click(function(e) {
   e.preventDefault();
-  openFile()
+  openFile();
 });
 
 function openFile() {
@@ -223,6 +232,12 @@ function keyHandler(evt) {
 
   if (evt.ctrlKey || evt.shiftKey || evt.metaKey) return;
   switch(code) {
+    case Key.UP:
+      moveUp();
+      break;
+    case Key.DOWN:
+      moveDown();
+      break
     case Key.LEFT:
       prevPanel();
       break;
@@ -267,6 +282,36 @@ function reset() {
   $('#lastbtn').click(null);
   $("#image_display img").hide();
   $('#page_count').hide();
+}
+
+function updatePos() {
+  pos = $("#image_display img").offset();
+  wX = $(window).scrollLeft();
+  wY = $(window).scrollTop();
+  wH = $(window).height();
+  wW = $(window).width();
+  oH = $("#image_display img").outerHeight();
+  oW = $("#image_display img").outerWidth();
+}
+
+function moveUp() {
+  updatePos();
+  // Check edge
+  if(pos.top >= wY) {
+    $("image_display img").animate({
+      bottom: '+= 25px'
+    }, 100, 'linear');
+  }
+}
+
+function moveDown() {
+  updatePos();
+  // Check edge
+  if(pos.top <= wY + wH) {
+    $("image_display img").animate({
+      bottom: '-= 25px'
+    }, 100, 'linear');
+  }
 }
 
 function hideControls() {
