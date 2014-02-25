@@ -1,10 +1,18 @@
 console.log("running\n");
 
+// key codes
+var Key = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, 
+A: 65, B: 66, C: 67, D: 68, E: 69, F: 70, G: 71, H: 72, I: 73, J: 74, K: 75, L: 76, M: 77, 
+N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 89, Z: 90};
+
 var images = [];
 var done = 0;
 var display = 1;
 var dir;
 var curPanel = 0;
+var first = 0;
+var last = images.length;
+$('#menubar').show();
 
 
 //Generic error handler
@@ -24,6 +32,7 @@ function loadSettings() {
 
 function init() {
   console.log("init loaded");
+  document.addEventListener("keydown", keyHandler, false);
   navigator.webkitTemporaryStorage.requestQuota(20*1024*1024, function(grantedBytes) {
     window.webkitRequestFileSystem(window.TEMPORARY, grantedBytes, onInitFs, errorHandler);
   }, errorHandler);
@@ -60,8 +69,12 @@ function dropHandler(e) {
    handleFile(files[0]);
  }
 
-$('#openbtn').click( function(e) {
+$('#openbtn').click(function(e) {
   e.preventDefault();
+  openFile()
+});
+
+function openFile() {
   console.log("Choose file\n");
   var accepts = [{
     extensions: ['zip', 'cbz']
@@ -78,11 +91,16 @@ $('#openbtn').click( function(e) {
       handleFile(file);
     });
   });
-});
+}
 
+// Load the files
 function handleFile(file) {
   console.log(file);
+  // Set the script path
   zip.workerScriptsPath = "js/lib/";
+
+  // Reset the app
+  reset();
 
   zip.createReader(new zip.BlobReader(file), function(reader) {
     console.log("Created reader.");
@@ -112,11 +130,16 @@ function handleFile(file) {
                 }
               }
 
-              if(done == images.length) loaded();
+              if(done == images.length) {
+                last = images.length
+                spread(1);
+              }
               else showProgress(images.length);
             });
           }, errorHandler());
-          loaded();
+          drawPanel(curPanel);
+          last = images.length
+          spread(1);
         }
       });
     });
@@ -125,29 +148,47 @@ function handleFile(file) {
   });
 }
 
-function loaded() {
-  $('nextbtn').click(function(e) {
-    e.preventDefault();
-    nextPanel();
-  });
-  $('prevbtn').click(function(e) {
-    e.preventDefault();
-    prevPanel();
-  });
-  drawPanel(curPanel);
-}
-
 function showProgress() {
 
 }
 
+$('#frstbtn').click(function(e) {
+  e.preventDefault();
+  frstPanel();
+});
+
+$('#nextbtn').click(function(e) {
+  e.preventDefault();
+  nextPanel();
+});
+
+$('#prevbtn').click(function(e) {
+  e.preventDefault();
+  prevPanel();
+});
+
+$('#lastbtn').click(function(e) {
+  e.preventDefault();
+  lastPanel();
+});
+
+function lastPanel() {
+  if(curPanel != last - display) drawPanel(images.length - display);
+  console.log(curPanel);
+}
+
 function prevPanel() {
-  if(curPanel > 0) drawPanel(curPanel-display);
+  if(curPanel > first) drawPanel(curPanel - display);
+  console.log(curPanel);
+}
+
+function frstPanel() {
+  if(curPanel != first) drawPanel(first);
   console.log(curPanel);
 }
 
 function nextPanel() {
-  if(curPanel+display < images.length) drawPanel(curPanel+display);
+  if(curPanel+display < last - display) drawPanel(curPanel + display);
   console.log(curPanel);
 }
 
@@ -159,19 +200,96 @@ function drawPanel(num) {
       $(this).hide();
     } else {
       $(this).attr("src",images[num+index].path);
-      $(this).attr("width", "100%");
-      $(this).attr("height", "100%");
       $(this).show();
     }
   });
 }
 
+function keyHandler(evt) {
+  var code = evt.keyCode;
+  if (code == Key.O) {
+    openFile();
+  }
+
+  if (evt.ctrlKey || evt.shiftKey || evt.metaKey) return;
+  switch(code) {
+    case Key.LEFT:
+      prevPanel();
+      break;
+    case Key.RIGHT:
+      nextPanel();
+      break;
+    case Key.H:
+      fitHorizontal();
+      break;
+    case Key.V:
+      fitVertical();
+      break;
+    case Key.B:
+      fitBoth();
+      break;
+    case Key.F:
+      frstPanel();
+      break;
+    case Key.L:
+      lastPanel();
+      break;
+    case Key.X:
+      hideControls();
+      break;
+    default:
+      console.log("KeyCode = " + code);
+      break;
+  }
+}
+
 function reset() {
-  var images = [];
-  var done = 0;
-  var display = 1;
-  var dir;
-  var curPanel = 0;
+  images = [];
+  done = 0;
+  display = 1;
+  dir;
+  curPanel = 0;
+  first = 0;
+  last = images.length;
+  drawPanel(curPanel);
+  $('#frstbtn').click(null);
+  $('#nextbtn').click(null);
+  $('#prevbtn').click(null);
+  $('#lastbtn').click(null);
+}
+
+function hideControls() {
+  if($('#menubar').is(":visible")) $('#menubar').hide();
+  else $('#menubar').show();
+}
+
+function fitHorizontal() {
+  $("#image_display img").removeClass();
+  $("#image_display img").addClass('fitHorizontal');
+}
+
+function fitVertical() {
+  $("#image_display img").removeClass();
+  $("#image_display img").addClass('fitVertical');
+}
+function fitBoth() {
+  $("#image_display img").removeClass();
+  $("#image_display img").addClass('fitBoth');
+}
+
+function spread(num) {
+  $('body').removeClass('spread'+display);
+  display = num;
+  $('body').addClass('spread'+display);
+
+  $("#comicImages").empty();
+  for(i=0; i < display; i++) {
+    var image = document.createElement("img");
+    $("#comicImages").append(image);
+  }
+
+  drawPanel(curPanel);
+  fitBoth();
 }
 
 window.onload = init();
