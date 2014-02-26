@@ -95,7 +95,7 @@ body {
 }
 
 .fitVertical {
-  height: 100%;
+  max-height: 100%;
   width: auto;
 }
 
@@ -123,7 +123,7 @@ body {
 
 .overlay {
     z-index:100;
-    position:absolute;    
+    position:fixed;    
     color:white;
     font-size:24px;
     font-weight:bold;
