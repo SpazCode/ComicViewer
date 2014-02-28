@@ -5,6 +5,10 @@ var Key = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40,
 A: 65, B: 66, C: 67, D: 68, E: 69, F: 70, G: 71, H: 72, I: 73, J: 74, K: 75, L: 76, M: 77,
 N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 89, Z: 90};
 
+var settings = {modeDisplay: 0, spread: 0, nextKey: 0, prevKey: 0, firstKey: 0, lastKey: 0, openKey: 0, settingKey: 0};
+
+var settingKeys = ["modeDisplay", "spread", "nextKey", "prevKey", "firstKey", "lastKey", "openKey", "settingKey"];
+
 var images = [];
 var done = 0;
 var display = 1;
@@ -12,21 +16,16 @@ var dir;
 var curPanel = 0;
 var first = 0;
 var last = images.length;
+var displayMode = 0;
 
 // Positional variables for the image and the window
 var pos = $(this).offset(),
 wX = $(window).scrollLeft(), wY = $(window).scrollTop(),
 wH = $(window).height(), wW = $(window).width(),
 oH = $(this).outerHeight(), oW = $(this).outerWidth();
-$outer_container=$("#outer_container");
-$imagePan_panning=$("#imagePan .panning");
-$imagePan=$("#imagePan");
-$imagePan_container=$("#imagePan .container");
-
 
 // Set the menu to be visible
 $('#menubar').show();
-
 
 //Generic error handler
 function errorHandler(e) {
@@ -36,18 +35,24 @@ function errorHandler(e) {
 
 // Generic Setting handler for the app
 function saveSettings() {
-  chrome.storage.local.set(['settings']);
+  chrome.storage.local.set({'spread':display, 'displayMode': displayMode}, function() {
+    message("saved");
+  });
 }
 
 function loadSettings() {
-
+  for(var key in settingKeys) {
+    chrome.storage.local.get(key, function(result) {
+      settings[key] = result;
+    });
+  }
 }
 
 function init() {
   console.log("init loaded");
   reset();
   document.addEventListener("keydown", keyHandler, false);
-  navigator.webkitTemporaryStorage.requestQuota(20*1024*1024, function(grantedBytes) {
+  navigator.webkitTemporaryStorage.requestQuota(40*1024*1024, function(grantedBytes) {
     window.webkitRequestFileSystem(window.TEMPORARY, grantedBytes, onInitFs, errorHandler);
   }, errorHandler);
 }
@@ -358,54 +363,10 @@ function dragImage() {
   wW = $(window).width();
 }
 
-/*
-// From http://manos.malihu.gr/jquery-image-panning/ Thanks :)
-function panning() {
-
-  $imagePan_panning.css("margin-top",($imagePan.height()-$imagePan_panning.height())/2+"px");
-  containerWidth=$imagePan.width();
-  containerHeight=$imagePan.height();
-  totalContentW=$imagePan_panning.width();
-  totalContentH=$imagePan_panning.height();
-  // $imagePan_container.css("width",totalContentW).css("height",totalContentH);
-
-  function MouseMove(e){
-    var mouseCoordsX=(e.pageX - $imagePan.offset().left);
-    var mouseCoordsY=(e.pageY - $imagePan.offset().top);
-    var mousePercentX=mouseCoordsX/containerWidth;
-    var mousePercentY=mouseCoordsY/containerHeight;
-    var destX=-(((totalContentW-(containerWidth))-containerWidth)*(mousePercentX));
-    var destY=-(((totalContentH-(containerHeight))-containerHeight)*(mousePercentY));
-    var thePosA=mouseCoordsX-destX;
-    var thePosB=destX-mouseCoordsX;
-    var thePosC=mouseCoordsY-destY;
-    var thePosD=destY-mouseCoordsY;
-    var marginL=$imagePan_panning.css("marginLeft").replace("px", "");
-    var marginT=$imagePan_panning.css("marginTop").replace("px", "");
-    var animSpeed=500; //ease amount
-    var easeType="easeOutCirc";
-    if(mouseCoordsX<destX || mouseCoordsY<destY){
-        //$imagePan_container.css("left",-thePosA-marginL); $imagePan_container.css("top",-thePosC-marginT); //without easing
-        $imagePan_container.stop().animate({left: -thePosA-marginL, top: -thePosC-marginT}, animSpeed, "linear"); //with easing
-    } else if(mouseCoordsX>destX || mouseCoordsY>destY){
-        //$imagePan_container.css("left",thePosB-marginL); $imagePan_container.css("top",thePosD-marginT); //without easing
-        $imagePan_container.stop().animate({left: thePosB-marginL, top: thePosD-marginT}, animSpeed, "linear"); //with easing
-    } else {
-        $imagePan_container.stop();
-    }
-  }
-
-  $imagePan_panning.css("margin-left",($imagePan.width()-$imagePan_panning.width())/2).css("margin-top",($imagePan.height()-$imagePan_panning.height())/2);
-
-  $imagePan.bind("mousemove", function(event){
-      MouseMove(event);
-  });
-}
- 
 $(window).resize(function() {
     $imagePan.unbind("mousemove");
     $imagePan_container.css("top",0).css("left",0);
     dragImage();
-});*/
+});
 
 window.onload = init();

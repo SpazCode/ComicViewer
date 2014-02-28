@@ -1,7 +1,9 @@
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'><html lang="en-US">
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html lang="en-US">
   <head>
     <meta charset="UFT-8">
     <title>Comic Viewer</title>
+    <link href = "css/bootstrap.min.css" rel = "stylesheet">
     <link href = "css/style.css" rel = "stylesheet">
   </head>
   <body>
@@ -11,11 +13,12 @@
     </div>
     <div class = "controlbar" id = "menubar">	
       <div class = "container">
-          <a class = "controlbutton left" id="frstbtn">First</a>
-          <a class = "controlbutton left" id="prevbtn">Previous</a>
-          <a class = "controlbutton left" id="nextbtn">Next</a>
-          <a class = "controlbutton left" id="lastbtn">Last</a>
-          <a class = "controlbutton right" id="openbtn">Open</a>
+          <button type="button" class="btn btn-default btn-sm pull-left" id="frstbtn"><span class="glyphicon glyphicon glyphicon-step-backward"></span></button>
+          <button type="button" class="btn btn-default btn-sm pull-left" id="prevbtn"><span class="glyphicon glyphicon glyphicon-chevron-left"></span></button>
+          <button type="button" class="btn btn-default btn-sm pull-left" id="nextbtn"><span class="glyphicon glyphicon glyphicon-chevron-right"></span></button>
+          <button type="button" class="btn btn-default btn-sm pull-left" id="lastbtn"><span class="glyphicon glyphicon glyphicon-step-forward"></span></button>
+          <button type="button" class="btn btn-default btn-sm pull-right" id="settingbtn"><span class="glyphicon glyphicon glyphicon glyphicon-cog"></span></button>
+          <button type="button" class="btn btn-default btn-sm pull-right" id="openbtn"><span class="glyphicon glyphicon glyphicon-folder-open"></span></button>
       </div>
     </div> 
     
