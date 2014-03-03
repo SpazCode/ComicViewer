@@ -6,24 +6,10 @@ body {
   background: #333;
 }
 
-.zoom {
-  width: 100%;
-  height: 100%;
-  background: #333;
-}
-
-.zoom:after {
-	content:'/';
-	display:block; 
-	padding: 2px 2px;
-	position:absolute; 
-	top:0;
-	right:0;
-	color: #fff;
-}
-
 .frame {
-  overflow: auto;
+  width: auto%;
+  height: auto%;
+  overflow: hidden;
 }
 
 .controlbar {
@@ -101,12 +87,12 @@ body {
 
 .spread2 .fitHorizontal {
   height: auto;
-  width: 50%;        
+  max-width: 50%;        
 }
 
 .spread1 .fitHorizontal {
   height: auto;
-  width: 100%;
+  max-width: 100%;
 }
 
 .fitBoth {
