@@ -4,11 +4,12 @@ body {
   margin: 0;
   padding: 0;
   background: #333;
+  overflow: hidden;
 }
 
 .frame {
-  width: auto%;
-  height: auto%;
+  width: auto;
+  height: auto;
   overflow: hidden;
 }
 

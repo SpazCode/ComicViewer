@@ -220,25 +220,25 @@ $('#lastbtn').click(function(e) {
 });
 
 function lastPanel() {
-  fullUnzoom();
+  image_zoom_out(1 - zoom_level);
   if(curPanel != last - display) drawPanel(images.length - display);
   console.log(curPanel);
 }
 
 function prevPanel() {
-  fullUnzoom();
+  image_zoom_out(1 - zoom_level);
   if(curPanel > first) drawPanel(curPanel - display);
   console.log(curPanel);
 }
 
 function frstPanel() {
-  fullUnzoom();
+  image_zoom_out(1 - zoom_level);
   if(curPanel != first) drawPanel(first);
   console.log(curPanel);
 }
 
 function nextPanel() {
-  fullUnzoom();
+  image_zoom_out(1 - zoom_level);
   if(curPanel+display < last - display) drawPanel(curPanel + display);
   console.log(curPanel);
 }
@@ -265,8 +265,8 @@ function drawPanel(num) {
       $(this).load(function() {
         $(this).removeAttr("height");
         $(this).removeAttr("width");
-        // $(this).height("auto");
-        // $(this).width("auto");
+        $(this).height("auto");
+        $(this).width("auto");
         fitBoth();
         addImageControls();
         resetPos();
@@ -286,38 +286,38 @@ function keyHandler(evt) {
   if (evt.ctrlKey || evt.shiftKey || evt.metaKey) return;
   switch(code) {
     case Key.LEFT:
-      if ($("#image_display img").position().left < 0 && zoom_level > 1) {
+      if ($("#image_display img").position().left < 0) {
         get_position();
         img_current_left += 50;
         image_move_update();
+        if($("#image_display img").position().left > 0) {
+          $("#image_display img").offset({top: img_current_top, left: 0});
+        }
       } else prevPanel();
       break;
     case Key.RIGHT:
-      if ($("#image_display img").position().left > -($("#image_display img").width() - $(document).width())/2 && zoom_level > 1) {
+      if ($("#image_display img").position().left > -($("#image_display img").width() - $(document).width())) {
         get_position();
         img_current_left -= 50;
         image_move_update();
+        if($("#image_display img").position().left < -($("#image_display img").width() - $(document).width())) {
+          $("#image_display img").offset({top: img_current_top, left: -($("#image_display img").width() - $(document).width())});
+        }
       } else nextPanel();
       break;
     case Key.UP:
-      if($("#image_display img").position().top < 0 && zoom_level > 1) {
+      if($("#image_display img").position().top < 0) {
         get_position();
         img_current_top += 50;
         image_move_update();
       }
       break;
     case Key.DOWN:
-      if($("#image_display img").position().top > -($("#image_display img").height() - $(document).height())/2 && zoom_level > 1) {
+      if($("#image_display img").position().top > -($("#image_display img").height() - $(document).height())) {
         get_position();
         img_current_top -= 50;
         image_move_update();
       }
-      break;
-    case Key.H:
-      fitHorizontal();s
-      break;
-    case Key.V:
-      fitVertical();
       break;
     case Key.B:
       fitBoth();
@@ -365,21 +365,10 @@ function hideControls() {
 }
 
 // Differnt display settings 
-function fitHorizontal() {
-  resetPos();
-  $("#image_display img").removeClass();
-  $("#image_display img").addClass('fitHorizontal');
-}
-
-function fitVertical() {
-  resetPos();
-  $("#image_display img").removeClass();
-  $("#image_display img").addClass('fitVertical');
-}
 function fitBoth() {
-  resetPos();
   $("#image_display img").removeClass();
   $("#image_display img").addClass('fitBoth');
+  resetPos();
 }
 
 // Ability to show more than one page at a time
@@ -387,7 +376,7 @@ function spread(num) {
   $('body').removeClass('spread'+display);
   display = num;
   $('body').addClass('spread'+display);
-  resetPos()
+  resetPos();
   $("#image_display").empty();
   for(i=0; i < display; i++) {
     var image = document.createElement("img");
@@ -401,19 +390,18 @@ function spread(num) {
 // initilize settings on winow load
 window.onload = init();
 
+// Adapting the image size on window resize
+$(window).resize(function() {
+  resetPos();
+  fitBoth();
+});
+
 /*Zoomify - Code to control the image*/
 
 function resetPos() {
-  $("#image_display img").offset({ top: 0, left: ($(window).width() - $("#image_display img").width())/2 });
+  // ($(window).width() - $("#image_display img").width())/2
+  $("#image_display img").offset({ top: 0, left: 0 });
   $("#image_display").offset({ top: 0, left: 0 });
-  $("#image_display").height("auto");
-  $("#image_display").width("auto");
-}
-
-function fullUnzoom() {
-  while(zoom_level > 1) {
-    image_zoom_out(-0.5);
-  }
 }
 
 // Enlarge or shrink the images
@@ -428,6 +416,7 @@ function image_zoom(change) {
 
   //--------------------------------------------------
   // Zoom level
+  // TODO:  Add new onscreen zoom controls 
   new_zoom = (zoom_level + change);
   img_ref.removeClass();
   if (new_zoom >= 3) {
@@ -447,6 +436,8 @@ function image_zoom(change) {
     if (new_zoom < 1) {
       // div_ref.fadeto(75,0.5);
       // div_ref.fadeto(75,1);
+      fitBoth();
+      resetPos();
       return;
     }
     // zoom_control_refs['out-on'].style.display = 'none';
@@ -472,6 +463,7 @@ function image_zoom(change) {
     img_current_left = (div_half_width - (new_zoom_width  / 2));
     img_current_top  = (div_half_height - (new_zoom_height / 2));
   } else {
+    get_position();
     ratio = (new_zoom_width / img_zoom_width);
 
     img_current_left = (div_half_width - ((div_half_width - img_current_left) * ratio));
