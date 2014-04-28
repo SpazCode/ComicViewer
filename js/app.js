@@ -68,6 +68,16 @@ function loadSettings() {
   }
 }
 
+var ImageFile = function(file) {
+  this.filename = file.filename;
+  var fileExtension = file.filename.split('.').pop().toLowerCase();
+  var mimeType = fileExtension == 'png' ? 'image/png' :
+      (fileExtension == 'jpg' || fileExtension == 'jpeg') ? 'image/jpeg' :
+      fileExtension == 'gif' ? 'image/gif' : undefined;
+  this.dataURI = createURLFromArray(file.fileData, mimeType);
+  this.data = file;
+};
+
 function init() {
   console.log("init loaded");
   reset();
@@ -129,6 +139,7 @@ function openFile() {
     }
     // use local storage to retain access to this file
     chrome.storage.local.set({'chosenFile': chrome.fileSystem.retainEntry(theEntry)});
+    // handleFile(theEntry);
     theEntry.file(function(file) {
       reset();
       handleFile(file);
@@ -138,59 +149,76 @@ function openFile() {
 
 // Load the files
 function handleFile(file) {
-  console.log(file);
-  // Set the script path
-  zip.workerScriptsPath = "js/lib/";
+  if (true) {
+    reset();
+    var fr = new FileReader();
+    fr.onload = function() {
+      var ab = fr.result;
+      var h = new Uint8Array(ab, 0, 10);
+      var pathToBitJS = "js/bitjs/";
+      var unarchiver = null;
+      if (h[0] == 0x52 && h[1] == 0x61 && h[2] == 0x72 && h[3] == 0x21) { //Rar!
+        unarchiver = new bitjs.archive.Unrarrer(ab, pathToBitJS);
+      } else if (h[0] == 80 && h[1] == 75) { //PK (Zip)
+        unarchiver = new bitjs.archive.Unzipper(ab, pathToBitJS);
+      } else { // Try with tar
+        unarchiver = new bitjs.archive.Untarrer(ab, pathToBitJS);
+      }
+      // Listen for UnarchiveEvents.
+      if (unarchiver) {
+        unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.PROGRESS,
+          function(e) {
+            showProgress();
+          }
+        );
+        unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.INFO,
+          function(e) {
+            console.log(e.msg);
+          }
+        );
+        unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.EXTRACT,
+          function(e) {
+            // convert DecompressedFile into a bunch of ImageFiles
+            if (e.unarchivedFile) {
+              var f = e.unarchivedFile;
 
-  // Reset the app
-  reset();
+              //rewrite w/o a path
+              var cleanName = f.filename;
+              if(cleanName.indexOf("/") >= 0) cleanName = cleanName.split("/").pop();
 
-  zip.createReader(new zip.BlobReader(file), function(reader) {
-    console.log("Created reader.");
-    reader.getEntries(function(entries) {
-      console.log("Got entries.");
+              dir.getFile(cleanName, {create:true}, function(file) {
+                // Initialize image
+                images.push({path:file.toURL(), loaded:true});
+                
+              var fileExtension = file.filename.split('.').pop().toLowerCase();
+              var mimeType = fileExtension == 'png' ? 'image/png' :
+                (fileExtension == 'jpg' || fileExtension == 'jpeg') ? 'image/jpeg' :
+                fileExtension == 'gif' ? 'image/gif' : undefined;
 
-      entries.forEach(function(entry) {
-        
-        if(!entry.directory && entry.filename.indexOf(".jpg") != -1) {
+              var blob = new Blob(f.fileData, mimeType);
 
-          //rewrite w/o a path
-          var cleanName = entry.filename;
-          if(cleanName.indexOf("/") >= 0) cleanName = cleanName.split("/").pop();
+              // Write to file
+              file.write(blob);
 
-          dir.getFile(cleanName, {create:true}, function(file) {
-            console.log("Yes, I opened "+file.fullPath);
-            images.push({path:file.toURL(), loaded:false});
-  
-            entry.getData(new zip.FileWriter(file), function(e) {
-              done++;
-              var perc = Math.floor((done/images.length)*100);
-
-              console.log("Percent Loaded: " + perc);
-
-              for(var i=0; i<images.length; i++) {
-                if(images[i].path == file.toURL()) {
-                  images[i].loaded = true;
-                  break;
-                }
+              // display first page if we haven't yet
+              if (images.length == curPanel + 1) {
+                drawPanel(curPanel);
               }
+          }
+        );
+        unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.FINISH,
+          function(e) {
+            console.log("Unarchiving done in");
+          }
+        );
+        unarchiver.start();
+      } else {
+        console.log("Some error");
+      }
+    }
+    fr.readAsArrayBuffer(file);
+  }
 
-              // If all the images are loaded
-              if(done == images.length) {
-                last = images.length;
-                spread(1);
-              }
-            });
-          }, errorHandler());
-          drawPanel(curPanel);
-          last = images.length;
-          spread(1);
-        }
-      });
-    });
-  }, function(err) {
-    console.dir(err);
-  });
 }
 
 // Progress Model
