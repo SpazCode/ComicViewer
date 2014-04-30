@@ -4,13 +4,22 @@ body {
   margin: 0;
   padding: 0;
   background: #333;
-  overflow: hidden;
 }
 
 .frame {
-  width: auto;
-  height: auto;
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.image {
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  max-height: calc(100% - 25px);
+  margin: auto;
+  text-align: center;
+  position: relative;
 }
 
 .controlbar {
@@ -81,41 +90,14 @@ body {
    border-radius: 10px;
 }
 
-.fitVertical {
-  max-height: 100%;
-  width: auto;
-}
-
-.spread2 .fitHorizontal {
-  height: auto;
-  max-width: 50%;        
-}
-
-.spread1 .fitHorizontal {
-  height: auto;
-  max-width: 100%;
-}
-
-.fitBoth {
-  max-height: 100%;
-}
-
-.spread1 .fitBoth {
-  max-width: 100%;
-}
-
-.spread2 .fitBoth {
-  max-width: 50%;
-}
-
 .overlay {
-    z-index:100;
-    position:fixed;    
-    color:white;
-    font-size:24px;
-    font-weight:bold;
-    top:0;
-    left:25;
-    background-color: #000;
-    opacity: 0.4;
+  z-index:100;
+  position:fixed;    
+  color:white;
+  font-size:24px;
+  font-weight:bold;
+  top:0;
+  left:25;
+  background-color: #000;
+  opacity: 0.4;
 }

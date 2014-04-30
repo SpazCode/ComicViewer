@@ -84,7 +84,7 @@ function init() {
   $(document).keydown(function(event) {
     keyHandler(event);
   });
-  navigator.webkitTemporaryStorage.requestQuota(40*1024*1024, function(grantedBytes) {
+  navigator.webkitTemporaryStorage.requestQuota(80*1024*1024, function(grantedBytes) {
     window.webkitRequestFileSystem(window.TEMPORARY, grantedBytes, onInitFs, errorHandler);
   }, errorHandler);
 }
@@ -130,7 +130,7 @@ $('#openbtn').click(function(e) {
 function openFile() {
   console.log("Choose file\n");
   var accepts = [{
-    extensions: ['zip', 'cbz']
+    extensions: ['zip', 'cbz', 'rar', 'cbr', 'tar']
   }];
   chrome.fileSystem.chooseEntry({type: 'openFile', accepts: accepts}, function(theEntry) {
     if (!theEntry) {
@@ -168,63 +168,78 @@ function handleFile(file) {
       if (unarchiver) {
         unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.PROGRESS,
           function(e) {
-            showProgress();
-          }
-        );
+            var percentage = e.currentBytesUnarchived / e.totalUncompressedBytesInArchive;
+            last = e.totalFilesInArchive;
+            // setProgressMeter(percentage);
+            // display nav
+            lastCompletion = percentage * 100;
+            
+          });
         unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.INFO,
           function(e) {
             console.log(e.msg);
-          }
-        );
+          });
         unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.EXTRACT,
           function(e) {
             // convert DecompressedFile into a bunch of ImageFiles
             if (e.unarchivedFile) {
               var f = e.unarchivedFile;
-
+              
               //rewrite w/o a path
               var cleanName = f.filename;
-              if(cleanName.indexOf("/") >= 0) cleanName = cleanName.split("/").pop();
+              if(cleanName.indexOf("\\") >= 0) cleanName = cleanName.split("\\").pop();
 
-              dir.getFile(cleanName, {create:true}, function(file) {
+              dir.getFile(cleanName, {create:true, exclusive:true}, function(file) {
                 // Initialize image
                 images.push({path:file.toURL(), loaded:true});
-                
-              var fileExtension = file.filename.split('.').pop().toLowerCase();
-              var mimeType = fileExtension == 'png' ? 'image/png' :
-                (fileExtension == 'jpg' || fileExtension == 'jpeg') ? 'image/jpeg' :
-                fileExtension == 'gif' ? 'image/gif' : undefined;
+              
+                var fileExtension = file.name.split(".").pop().toLowerCase();
+                var mimeType = fileExtension == 'png' ? 'image/png' :
+                  (fileExtension == 'jpg' || fileExtension == 'jpeg') ? 'image/jpeg' :
+                  fileExtension == 'gif' ? 'image/gif' : undefined;
 
-              var blob = new Blob(f.fileData, mimeType);
+                var blob = new Blob(f.fileData, {type: mimeType});
 
-              // Write to file
-              file.write(blob);
+                // Create a FileWriter object for our FileEntry (log.txt).
+                file.createWriter(function(fileWriter) {
+                  fileWriter.onwriteend = function(e) {
+                    console.log('Write completed. ' +file.name);
+                  };
+
+                  fileWriter.onerror = function(e) {
+                    console.log('Write failed: ' + e.toString());
+                  };
+                  // Write to file
+                  fileWriter.write(blob);
+                }, errorHandler);
+
+              });
 
               // display first page if we haven't yet
               if (images.length == curPanel + 1) {
                 drawPanel(curPanel);
               }
-          }
-        );
+            }
+
+          });
         unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.FINISH,
           function(e) {
-            console.log("Unarchiving done in");
-          }
-        );
+            console.log("Done");
+          });
         unarchiver.start();
       } else {
-        console.log("Some error");
+        alert("Some error");
       }
-    }
+    };
     fr.readAsArrayBuffer(file);
   }
-
 }
+
 
 // Progress Model
-function showProgress() {
+/*function showProgress() {
 
-}
+}*/
 
 // Gallary controls
 $('#frstbtn').click(function(e) {
