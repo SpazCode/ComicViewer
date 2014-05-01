@@ -170,8 +170,6 @@ function handleFile(file) {
           function(e) {
             var percentage = e.currentBytesUnarchived / e.totalUncompressedBytesInArchive;
             last = e.totalFilesInArchive;
-            // setProgressMeter(percentage);
-            // display nav
             lastCompletion = percentage * 100;
             
           });
@@ -189,42 +187,15 @@ function handleFile(file) {
               var cleanName = f.filename;
               if(cleanName.indexOf("\\") >= 0) cleanName = cleanName.split("\\").pop();
 
-              dir.getFile(cleanName, {create:true, exclusive:true}, function(file) {
-                // Initialize image
-                images.push({path:file.toURL(), loaded:true});
-              
-                var fileExtension = file.name.split(".").pop().toLowerCase();
-                var mimeType = fileExtension == 'png' ? 'image/png' :
-                  (fileExtension == 'jpg' || fileExtension == 'jpeg') ? 'image/jpeg' :
-                  fileExtension == 'gif' ? 'image/gif' : undefined;
-
-                var blob = new Blob(f.fileData, {type: mimeType});
-
-                // Create a FileWriter object for our FileEntry (log.txt).
-                file.createWriter(function(fileWriter) {
-                  fileWriter.onwriteend = function(e) {
-                    console.log('Write completed. ' +file.name);
-                  };
-
-                  fileWriter.onerror = function(e) {
-                    console.log('Write failed: ' + e.toString());
-                  };
-                  // Write to file
-                  fileWriter.write(blob);
-                }, errorHandler);
-
-              });
-
-              // display first page if we haven't yet
-              if (images.length == curPanel + 1) {
-                drawPanel(curPanel);
-              }
+              // Push file info to save later
+              images.push({path:'', name:cleanName, loaded:false, data:f});
             }
 
           });
         unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.FINISH,
           function(e) {
-            console.log("Done");
+            console.log("Done Extracting, Begin Saving");
+            saveFiles(0);
           });
         unarchiver.start();
       } else {
@@ -235,6 +206,28 @@ function handleFile(file) {
   }
 }
 
+function saveFiles(index) {
+    var fileExtension = images[index].name.split(".").pop().toLowerCase();
+    var mimeType = fileExtension == 'png' ? 'image/png' :
+      (fileExtension == 'jpg' || fileExtension == 'jpeg') ? 'image/jpeg' :
+      fileExtension == 'gif' ? 'image/gif' : undefined;
+
+    // Initializing the worker
+    var worker = new Worker('js/fileworker.js');
+    // Run worker
+    worker.onmessage = function(e) {
+      console.log(e.data);
+      if (e.data.url) {
+        images[index].path = e.data.url;
+        images[index].loaded = true;
+        drawPanel(curPanel);
+        if (index < images.length -1)
+          saveFiles(index + 1);
+      }
+    };
+    worker.postMessage({fileName: images[index].name,
+      blob: images[index].data.fileData, type: mimeType});
+}
 
 // Progress Model
 /*function showProgress() {
