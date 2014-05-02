@@ -15,7 +15,7 @@ onmessage = function(e) {
   }
 
   try {
-    var fs = requestFileSystemSync(TEMPORARY, 20 * 1024 * 1024 /*1MB*/);
+    var fs = requestFileSystemSync(TEMPORARY, 30 * 1024 * 1024 /*30MB*/);
 
     postMessage('Got file system.');
 

@@ -1,5 +1,6 @@
 console.log("running\n");
-
+console.log($('body').width());
+console.log($(window).width());
 // key codes
 var Key = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40,
 A: 65, B: 66, C: 67, D: 68, E: 69, F: 70, G: 71, H: 72, I: 73, J: 74, K: 75, L: 76, M: 77,
@@ -13,27 +14,6 @@ var settingKeys = ["modeDisplay", "spread", "nextKey", "prevKey", "firstKey", "l
 
 //--------------------------------------------------
 // Variables
-// Image Control variables
-var div_ref = null,
-  div_half_width = null,
-  div_half_height = null,
-  img_ref = null,
-  img_orig_width = null,
-  img_orig_height = null,
-  img_zoom_width = null,
-  img_zoom_height = null,
-  img_start_left = null,
-  img_start_top = null,
-  img_current_left = null,
-  img_current_top = null,
-  zoom_control_refs = {},
-  zoom_level = 1,
-  zoom_levels = [],
-  zoom_level_count = [],
-  click_last = 0,
-  origin = null,
-  html_ref = null;
-
 // For loading and controling comics display
 var images = [];
 var done = 0;
@@ -171,7 +151,6 @@ function handleFile(file) {
             var percentage = e.currentBytesUnarchived / e.totalUncompressedBytesInArchive;
             last = e.totalFilesInArchive;
             lastCompletion = percentage * 100;
-            
           });
         unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.INFO,
           function(e) {
@@ -182,20 +161,19 @@ function handleFile(file) {
             // convert DecompressedFile into a bunch of ImageFiles
             if (e.unarchivedFile) {
               var f = e.unarchivedFile;
-              
-              //rewrite w/o a path
-              var cleanName = f.filename;
-              if(cleanName.indexOf("\\") >= 0) cleanName = cleanName.split("\\").pop();
+              var result = $.grep(images, function(e){ return e.name == f.filename; });
 
-              // Push file info to save later
-              images.push({path:'', name:cleanName, loaded:false, data:f});
+              if (result == 0) 
+                images.push({name:f.filename, loaded:false, image:new ImageFile(f)});
+
+              if (images.length > curPanel + 1)
+                drawPanel(curPanel);
             }
 
           });
         unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.FINISH,
           function(e) {
             console.log("Done Extracting, Begin Saving");
-            saveFiles(0);
           });
         unarchiver.start();
       } else {
@@ -206,27 +184,41 @@ function handleFile(file) {
   }
 }
 
-function saveFiles(index) {
-    var fileExtension = images[index].name.split(".").pop().toLowerCase();
-    var mimeType = fileExtension == 'png' ? 'image/png' :
-      (fileExtension == 'jpg' || fileExtension == 'jpeg') ? 'image/jpeg' :
-      fileExtension == 'gif' ? 'image/gif' : undefined;
 
-    // Initializing the worker
-    var worker = new Worker('js/fileworker.js');
-    // Run worker
-    worker.onmessage = function(e) {
-      console.log(e.data);
-      if (e.data.url) {
-        images[index].path = e.data.url;
-        images[index].loaded = true;
-        drawPanel(curPanel);
-        if (index < images.length -1)
-          saveFiles(index + 1);
-      }
-    };
-    worker.postMessage({fileName: images[index].name,
-      blob: images[index].data.fileData, type: mimeType});
+var createURLFromArray = function(array, mimeType) {
+  var offset = array.byteOffset, len = array.byteLength;
+  var bb, url;
+  var blob;
+ // Blob constructor, see http://dev.w3.org/2006/webapi/FileAPI/#dfn-Blob.
+  if (typeof Blob == 'function') {
+    blob = new Blob([array], {type: mimeType});
+  } else {
+    var bb = (typeof BlobBuilder == 'function' ? (new BlobBuilder()) : //Chrome 8
+               (typeof WebKitBlobBuilder == 'function' ? (new WebKitBlobBuilder()) : //Chrome 12
+                 (typeof MozBlobBuilder == 'function' ? (new MozBlobBuilder()) : //Firefox 6
+               null)));
+    if (!bb) return false;
+    bb.append(array.buffer);
+    blob = bb.getBlob();
+  }
+  
+  if (blob.webkitSlice) { //Chrome 12
+    blob = blob.webkitSlice(offset, offset + len, mimeType);
+  } else if(blob.mozSlice) { //Firefox 5
+    blob = blob.mozSlice(offset, offset + len, mimeType);
+  } else if(blob.slice) { //
+    blob = blob.slice(2, 3).size == 1 ? 
+      blob.slice(offset, offset + len, mimeType) : //future behavior
+      blob.slice(offset, len, mimeType); //Old behavior
+  }
+  
+  // TODO: Simplify this some time in 2013 (Chrome 8 and 9 are ancient history).
+  var url = (typeof createObjectURL == 'function' ? createObjectURL(blob) : //Chrome 9?
+              (typeof createBlobURL == 'function' ? createBlobURL(blob) : //Chrome 8
+                (((typeof URL == 'object' || typeof URL == 'function') && typeof URL.createObjectURL == 'function') ? URL.createObjectURL(blob) : //Chrome 15? Firefox
+                  (((typeof webkitURL == 'object' || typeof webkitURL == 'function') && typeof webkitURL.createObjectURL == 'function') ? webkitURL.createObjectURL(blob) : //Chrome 10
+                    ''))));
+  return url;
 }
 
 // Progress Model
@@ -255,26 +247,42 @@ $('#lastbtn').click(function(e) {
   lastPanel();
 });
 
+$('#zoomoutbtn').click(function(e) {
+  e.preventDefault();
+  zoomOut();
+});
+
+$('#zoominbtn').click(function(e) {
+  e.preventDefault();
+  zoomIn();
+});
+
+function zoomOut() {
+  if($('body').width >= "100%" && $('body').height >= "100%") {
+
+  }
+}
+
+function zoomIn() {
+  $('body').height('200%');
+}
+
 function lastPanel() {
-  image_zoom_out(1 - zoom_level);
   if(curPanel != last - display) drawPanel(images.length - display);
   console.log(curPanel);
 }
 
 function prevPanel() {
-  image_zoom_out(1 - zoom_level);
   if(curPanel > first) drawPanel(curPanel - display);
   console.log(curPanel);
 }
 
 function frstPanel() {
-  image_zoom_out(1 - zoom_level);
   if(curPanel != first) drawPanel(first);
   console.log(curPanel);
 }
 
 function nextPanel() {
-  image_zoom_out(1 - zoom_level);
   if(curPanel+display < last - display) drawPanel(curPanel + display);
   console.log(curPanel);
 }
@@ -299,14 +307,9 @@ function drawPanel(num) {
     } else {
       $(this).unbind("load");
       $(this).load(function() {
-        $(this).removeAttr("height");
-        $(this).removeAttr("width");
-        $(this).height("auto");
-        $(this).width("auto");
-        fitBoth();
-        addImageControls();
-        resetPos();
-      }).attr("src",images[num+index].path);
+        // addImageControls();
+        // resetPos();
+      }).attr("src",images[num+index].image.dataURI);
       $(this).show();
     }
   });
@@ -322,38 +325,10 @@ function keyHandler(evt) {
   if (evt.ctrlKey || evt.shiftKey || evt.metaKey) return;
   switch(code) {
     case Key.LEFT:
-      if ($("#image_display img").position().left < 0) {
-        get_position();
-        img_current_left += 50;
-        image_move_update();
-        if($("#image_display img").position().left > 0) {
-          $("#image_display img").offset({top: img_current_top, left: 0});
-        }
-      } else prevPanel();
+      prevPanel();
       break;
     case Key.RIGHT:
-      if ($("#image_display img").position().left > -($("#image_display img").width() - $(document).width())) {
-        get_position();
-        img_current_left -= 50;
-        image_move_update();
-        if($("#image_display img").position().left < -($("#image_display img").width() - $(document).width())) {
-          $("#image_display img").offset({top: img_current_top, left: -($("#image_display img").width() - $(document).width())});
-        }
-      } else nextPanel();
-      break;
-    case Key.UP:
-      if($("#image_display img").position().top < 0) {
-        get_position();
-        img_current_top += 50;
-        image_move_update();
-      }
-      break;
-    case Key.DOWN:
-      if($("#image_display img").position().top > -($("#image_display img").height() - $(document).height())) {
-        get_position();
-        img_current_top -= 50;
-        image_move_update();
-      }
+      nextPanel();
       break;
     case Key.B:
       fitBoth();
@@ -367,9 +342,6 @@ function keyHandler(evt) {
     case Key.X:
       hideControls();
       break;
-    case Key.I:
-      console.log("Image: width- " + $('#image_display img').width() + " height- " + $('#image_display img').height());
-      break;
     default:
       console.log("KeyCode = " + code);
       break;
@@ -378,7 +350,7 @@ function keyHandler(evt) {
 
 // Reset to defaults on reload
 function reset() {
-  resetPos();
+ //  resetPos();
   images = [];
   done = 0;
   display = 1;
@@ -390,6 +362,8 @@ function reset() {
   $('#nextbtn').click(null);
   $('#prevbtn').click(null);
   $('#lastbtn').click(null);
+  $('#zoominbtn').click(null);
+  $('#zoomoutbtn').click(null);
   $("#image_display img").hide();
   $('#page_count').hide();
 }
@@ -400,295 +374,11 @@ function hideControls() {
   else $('#menubar').show();
 }
 
-// Differnt display settings 
-function fitBoth() {
-  $("#image_display img").removeClass();
-  $("#image_display img").addClass('fitBoth');
-  resetPos();
-}
-
-// Ability to show more than one page at a time
-function spread(num) {
-  $('body').removeClass('spread'+display);
-  display = num;
-  $('body').addClass('spread'+display);
-  resetPos();
-  $("#image_display").empty();
-  for(i=0; i < display; i++) {
-    var image = document.createElement("img");
-    $("#image_display").append(image);
-  }
-
-  drawPanel(curPanel);
-  fitBoth();
-}
 
 // initilize settings on winow load
 window.onload = init();
 
 // Adapting the image size on window resize
 $(window).resize(function() {
-  resetPos();
-  fitBoth();
+  drawPanel(curPanel);
 });
-
-/*Zoomify - Code to control the image*/
-
-function resetPos() {
-  // ($(window).width() - $("#image_display img").width())/2
-  $("#image_display img").offset({ top: 0, left: 0 });
-  $("#image_display").offset({ top: 0, left: 0 });
-}
-
-// Enlarge or shrink the images
-function image_zoom(change) {
-  if(!(img_ref && div_ref)) return;
-  //--------------------------------------------------
-  // Variables
-  var new_zoom,
-    new_zoom_width,
-    new_zoom_height,
-    ratio;
-
-  //--------------------------------------------------
-  // Zoom level
-  // TODO:  Add new onscreen zoom controls 
-  new_zoom = (zoom_level + change);
-  img_ref.removeClass();
-  if (new_zoom >= 3) {
-    if (new_zoom > 3) {
-      // div_ref.fadeto(75,0.5);
-      // div_ref.fadeto(75,1);
-      return;
-    }
-    // zoom_control_refs['in-on'].style.display = 'none';
-    // zoom_control_refs['in-off'].style.display = 'block';
-  } else {
-    // zoom_control_refs['in-on'].style.display = 'block';
-    // zoom_control_refs['in-off'].style.display = 'none';
-  }
-
-  if (new_zoom <= 1) {
-    if (new_zoom < 1) {
-      // div_ref.fadeto(75,0.5);
-      // div_ref.fadeto(75,1);
-      fitBoth();
-      resetPos();
-      return;
-    }
-    // zoom_control_refs['out-on'].style.display = 'none';
-    // zoom_control_refs['out-off'].style.display = 'block';
-  } else {
-    // zoom_control_refs['out-on'].style.display = 'block';
-    // zoom_control_refs['out-off'].style.display = 'none';
-  }
-
-  zoom_level = new_zoom;
-
-//--------------------------------------------------
-// New width
-  new_zoom_width = img_orig_width * new_zoom;
-  new_zoom_height = img_orig_height * new_zoom;
-
-  img_ref.width(new_zoom_width);
-  img_ref.height(new_zoom_height);
-
-//--------------------------------------------------
-// Update position
-  if (img_current_left === null) { // Position in the middle on page load
-    img_current_left = (div_half_width - (new_zoom_width  / 2));
-    img_current_top  = (div_half_height - (new_zoom_height / 2));
-  } else {
-    get_position();
-    ratio = (new_zoom_width / img_zoom_width);
-
-    img_current_left = (div_half_width - ((div_half_width - img_current_left) * ratio));
-    img_current_top  = (div_half_height - ((div_half_height - img_current_top)  * ratio));
-  }
-
-  img_zoom_width = new_zoom_width;
-  img_zoom_height = new_zoom_height;
-
-  img_ref.offset({top: img_current_top, left: img_current_left});
-}
-
-function image_zoom_in() {
-  image_zoom(0.5);
-}
-
-function image_zoom_out() {
-  image_zoom(-0.5);
-}
-
-function scroll_event(e) {
-  //--------------------------------------------------
-  // Event
-  e = e || window.event;
-  var wheelData = (e.detail ? e.detail * -1 : e.wheelDelta / 40);
-  image_zoom(wheelData > 0 ? 0.5 : -0.5);
-
-  //--------------------------------------------------
-  // Prevent default
-  if (e.preventDefault) {
-    e.preventDefault();
-  } else {
-    e.returnValue = false;
-  }
-
-  return false;
-}
-
-//--------------------------------------------------
-// Movement
-function event_coords(e) {
-  var coords = [];
-  if(e) {
-    coords[0] = e.pageX;
-    coords[1] = e.pageY;
-  }
-  return coords;
-}
-function get_position() {
-  img_current_left = $("#image_display img").position().left;
-  img_current_top = $("#image_display img").position().top;
-}
-
-function image_move_update() {
-  //--------------------------------------------------
-  // Boundary check
-  var max_left = (div_half_width - img_zoom_width),
-    max_top = (div_half_height - img_zoom_height);
-
-  if (img_current_left > div_half_width)  { img_current_left = div_half_width; }
-  if (img_current_top  > div_half_height) { img_current_top  = div_half_height; }
-  if (img_current_left < max_left)        { img_current_left = max_left; }
-  if (img_current_top  < max_top)         { img_current_top  = max_top;  }
-
-  //--------------------------------------------------
-  // Move
-  img_ref.offset({top: img_current_top, left: img_current_left});
-}
-
-function image_move_event(e) {
-  //--------------------------------------------------
-  // Calculations
-  var currentPos = event_coords(e);
-
-  img_current_left = (img_start_left + (currentPos[0] - origin[0]));
-  img_current_top = (img_start_top + (currentPos[1] - origin[1]));
-  image_move_update();
-
-  return false;
-}
-
-function image_move_start(e) {
-  //--------------------------------------------------
-  // Event
-  // e.preventDefault();
-
-  //--------------------------------------------------
-  // Double tap/click event
-  var now = new Date().getTime();
-  if (click_last > (now - 200)) {
-    image_zoom_in();
-  } else {
-    click_last = now;
-  }
-
-  //--------------------------------------------------
-  // Add events
-  $(document).mousemove(function(event) {
-    image_move_event(event);
-  });
-  $(document).mouseup(function() {
-    $(document).mousemove(function(){});
-    $(document).mouseup(function(){});
-  });
-
-  //--------------------------------------------------
-  // Record starting position
-  img_start_left = img_current_left;
-  img_start_top = img_current_top;
-
-  origin = event_coords(e);
-}
-
-function addImageControls() { // Not DOM ready, as we need the image to have loaded
-  div_ref = $('#image_display');
-  img_ref = $('#image_display img');
-
-  if (div_ref && img_ref) {
-
-  //--------------------------------------------------
-  // Variables
-  var div_border,
-    div_style,
-    div_width,
-    div_height,
-    width,
-    height,
-    button,
-    buttons,
-    name,
-    len,
-    k;
-
-  //--------------------------------------------------
-  // Wrapper size
-  div_half_width = div_ref.width();
-  div_half_height = div_ref.height();
-  
-  div_half_width = Math.round(parseInt(div_half_width, 10) / 2);
-  div_half_height = Math.round(parseInt(div_half_height, 10) / 2);
-
-  //--------------------------------------------------
-  // Original size
-  img_orig_width = img_ref.width();
-  img_orig_height = img_ref.height();
-
-  // Zoom levels
-  //--------------------------------------------------
-  // Defaults
-  div_width = (div_half_width * 2);
-  div_height = (div_half_height * 2);
-
-  width = img_orig_width;
-  height = img_orig_height;
-
-  zoom_levels[zoom_levels.length] = width;
-  
-  while (width > div_width || height > div_height) {
-    width = (width * 0.75);
-    height = (height * 0.75);
-    zoom_levels[zoom_levels.length] = Math.round(width);
-  }
-
-  //--------------------------------------------------
-  // Mobile phone, over zoom
-    if (parseInt(div_border, 10) === 5) { // img width on webkit will return width before CSS is applied
-      zoom_levels[zoom_levels.length] = Math.round(img_orig_width * 1.75);
-      zoom_levels[zoom_levels.length] = Math.round(img_orig_width * 3);
-    }
-
-  //--------------------------------------------------
-  // Add events
-    img_ref.mousedown(image_move_start(event));
-
-    document.onkeyup = function(e) {
-      var keyCode = (e ? e.which : window.event.keyCode);
-      if (keyCode === 37 || keyCode === 39) { // left or right
-        //img_current_left = (img_current_left + (keyCode === 39 ? 50 : -50));
-        //image_move_update();
-      } else if (keyCode === 38 || keyCode === 40) { // up or down
-        //img_current_top = (img_current_top + (keyCode === 40 ? 50 : -50));
-        //image_move_update();
-      } else if (keyCode === 107 || keyCode === 187 || keyCode === 61) { // + or = (http://www.javascripter.net/faq/keycodes.htm)
-        image_zoom_in();
-        console.log("Zoom in " + zoom_level);
-      } else if (keyCode === 109 || keyCode === 189) { // - or _
-        image_zoom_out();
-        console.log("Zoom out " + zoom_level);
-      }
-    };
-  }
-};
