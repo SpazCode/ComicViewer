@@ -4,7 +4,8 @@ console.log($(window).width());
 // key codes
 var Key = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40,
 A: 65, B: 66, C: 67, D: 68, E: 69, F: 70, G: 71, H: 72, I: 73, J: 74, K: 75, L: 76, M: 77,
-N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 89, Z: 90};
+N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 89, Z: 9, 
+EQUALS:187, ADD:107, UNDERSCORE:189, SUB:109};
 
 // Settings object
 var settings = {modeDisplay: 0, spread: 0, nextKey: 0, prevKey: 0, firstKey: 0, lastKey: 0, openKey: 0, settingKey: 0};
@@ -62,7 +63,7 @@ var ImageFile = function(file) {
 function init() {
   console.log("init loaded");
   reset();
-  $(document).keydown(function(event) {
+  $(document).keyup(function(event) {
     keyHandler(event);
   });
   navigator.webkitTemporaryStorage.requestQuota(80*1024*1024, function(grantedBytes) {
@@ -256,8 +257,20 @@ $('#lastbtn').click(function(e) {
   lastPanel();
 });
 
+$('#helpbtn').click(function(e) {
+  toggleHelp();
+});
+
+function toggleHelp() {
+  if($('#helpscreen').is(':hidden')) {
+    $('#helpscreen').show();
+  } else {
+    $('#helpscreen').hide();
+  }
+}
+
 function lastPanel() {
-  if(curPanel != last - display) drawPanel(images.length - display);
+  if(curPanel != last - display) drawPanel(images.length - 1);
   console.log(curPanel);
 }
 
@@ -272,7 +285,7 @@ function frstPanel() {
 }
 
 function nextPanel() {
-  if(curPanel+display < last - display) drawPanel(curPanel + display);
+  if(curPanel+display < images.length) drawPanel(curPanel + display);
   console.log(curPanel);
 }
 
@@ -293,7 +306,7 @@ function drawPanel(num) {
     if (num+index >= images.length || num+index < 0) {
       $(this).hide();
     } else {
-      $(this).text((curPanel + 1) + "/" + (images.length - 1));
+      $(this).text((curPanel + 1) + "/" + (images.length));
       $(this).show();
     }
   });
@@ -305,6 +318,9 @@ function drawPanel(num) {
     } else {
       $(this).unbind("load");
       $(this).load(function() {
+        $(document).keyup(function(event) {
+          keyHandler(event);
+        });
         zoomon();
       }).attr("src",images[num+index].image.dataURI);
       $(this).show();
@@ -327,8 +343,23 @@ function keyHandler(evt) {
     case Key.RIGHT:
       nextPanel();
       break;
-    case Key.B:
-      fitBoth();
+    case Key.ADD:
+      $('#zoominbtn').click();
+      break;
+    case Key.SUB:
+      $('#zoomoutbtn').click();
+      break;
+    case Key.EQUALS:
+      $('#zoominbtn').click();
+      break;
+    case Key.UNDERSCORE:
+      $('#zoomoutbtn').click();
+      break;
+    case Key.R:
+      $('#resetbtn').click();
+      break;
+    case Key.H:
+      toggleHelp();
       break;
     case Key.F:
       frstPanel();
