@@ -230,28 +230,28 @@ var createURLFromArray = function(array, mimeType) {
 // Gallary controls
 $('#frstbtn').click(function(e) {
   e.preventDefault();
-  $('#image_display img').panzoom("resetDimensions");
+  $('#image_display img').panzoom("resetZoom");
   $('#image_display img').panzoom("resetPan");
   frstPanel();
 });
 
 $('#nextbtn').click(function(e) {
   e.preventDefault();
-  $('#image_display img').panzoom("resetDimensions");
+  $('#image_display img').panzoom("resetZoom");
   $('#image_display img').panzoom("resetPan");
   nextPanel();
 });
 
 $('#prevbtn').click(function(e) {
   e.preventDefault();
-  $('#image_display img').panzoom("resetDimensions");
+  $('#image_display img').panzoom("resetZoom");
   $('#image_display img').panzoom("resetPan");
   prevPanel();
 });
 
 $('#lastbtn').click(function(e) {
   e.preventDefault();
-  $('#image_display img').panzoom("resetDimensions");
+  $('#image_display img').panzoom("resetZoom");
   $('#image_display img').panzoom("resetPan");
   lastPanel();
 });
