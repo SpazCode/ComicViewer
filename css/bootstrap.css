@@ -2262,7 +2262,7 @@ textarea.input-lg {
   cursor: pointer;
   background-image: none;
   border: 1px solid transparent;
-  border-radius: 4px;
+  /*border-radius: 4px;*/
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -2304,7 +2304,7 @@ fieldset[disabled] .btn {
 .btn-default {
   color: #333333;
   background-color: #ffffff;
-  border-color: #cccccc;
+  /*border-color: #cccccc;*/
 }
 
 .btn-default:hover,
@@ -2619,7 +2619,7 @@ fieldset[disabled] .btn-link:focus {
   padding: 10px 16px;
   font-size: 18px;
   line-height: 1.33;
-  border-radius: 6px;
+  /*border-radius: 6px;*/
 }
 
 .btn-sm {

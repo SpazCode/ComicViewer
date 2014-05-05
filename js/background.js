@@ -8,7 +8,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
     frame: 'chrome',
     width: width,
     height: height,
-    minWidth: 400,
+    minWidth: 500,
     minHeight: 600,
     left: Math.floor((screenWidth-width)/2),
     top: Math.floor((screenHeight-height)/2)
