@@ -23,6 +23,7 @@ var curPanel = 0;
 var first = 0;
 var last = images.length;
 var displayMode = 0;
+var currentZoomLevel = 1;
 
 // Set the menu to be visible
 $('#menubar').show();
@@ -229,43 +230,31 @@ var createURLFromArray = function(array, mimeType) {
 // Gallary controls
 $('#frstbtn').click(function(e) {
   e.preventDefault();
+  $('#image_display img').panzoom("resetDimensions");
+  $('#image_display img').panzoom("resetPan");
   frstPanel();
 });
 
 $('#nextbtn').click(function(e) {
   e.preventDefault();
+  $('#image_display img').panzoom("resetDimensions");
+  $('#image_display img').panzoom("resetPan");
   nextPanel();
 });
 
 $('#prevbtn').click(function(e) {
   e.preventDefault();
+  $('#image_display img').panzoom("resetDimensions");
+  $('#image_display img').panzoom("resetPan");
   prevPanel();
 });
 
 $('#lastbtn').click(function(e) {
   e.preventDefault();
+  $('#image_display img').panzoom("resetDimensions");
+  $('#image_display img').panzoom("resetPan");
   lastPanel();
 });
-
-$('#zoomoutbtn').click(function(e) {
-  e.preventDefault();
-  zoomOut();
-});
-
-$('#zoominbtn').click(function(e) {
-  e.preventDefault();
-  zoomIn();
-});
-
-function zoomOut() {
-  if($('body').width >= "100%" && $('body').height >= "100%") {
-
-  }
-}
-
-function zoomIn() {
-  $('body').height('200%');
-}
 
 function lastPanel() {
   if(curPanel != last - display) drawPanel(images.length - display);
@@ -285,6 +274,15 @@ function frstPanel() {
 function nextPanel() {
   if(curPanel+display < last - display) drawPanel(curPanel + display);
   console.log(curPanel);
+}
+
+function zoomon() {
+  $('#image_display img').panzoom({
+    $zoomIn    : $('#zoominbtn'),
+    $zoomOut   : $('#zoomoutbtn'),
+    $reset     : $("#resetbtn"),
+    maxScale   : 3,
+  });
 }
 
 // Draw image on the screen
@@ -307,8 +305,7 @@ function drawPanel(num) {
     } else {
       $(this).unbind("load");
       $(this).load(function() {
-        // addImageControls();
-        // resetPos();
+        zoomon();
       }).attr("src",images[num+index].image.dataURI);
       $(this).show();
     }
@@ -373,7 +370,6 @@ function hideControls() {
   if($('#menubar').is(":visible")) $('#menubar').hide();
   else $('#menubar').show();
 }
-
 
 // initilize settings on winow load
 window.onload = init();
