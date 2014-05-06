@@ -15,7 +15,6 @@ body {
 .image {
   max-width: 100%;
   height: 100%;
-  max-height: calc(100% - 25px);
   margin: auto;
   text-align: center;
   vertical-align:middle;
@@ -32,7 +31,7 @@ body {
 
 .helpscreen {
   width: 100%;
-  height: 125px;
+  height: 105px;
   position: fixed;
   bottom: 45px;
   background: #FFF;

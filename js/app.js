@@ -63,9 +63,7 @@ var ImageFile = function(file) {
 function init() {
   console.log("init loaded");
   reset();
-  $(document).keyup(function(event) {
-    keyHandler(event);
-  });
+  $(document).keyup(keyHandler);
   navigator.webkitTemporaryStorage.requestQuota(80*1024*1024, function(grantedBytes) {
     window.webkitRequestFileSystem(window.TEMPORARY, grantedBytes, onInitFs, errorHandler);
   }, errorHandler);
@@ -318,9 +316,8 @@ function drawPanel(num) {
     } else {
       $(this).unbind("load");
       $(this).load(function() {
-        $(document).keyup(function(event) {
-          keyHandler(event);
-        });
+        $(document).unbind("keyup", keyHandler);
+        $(document).keyup(keyHandler);
         zoomon();
       }).attr("src",images[num+index].image.dataURI);
       $(this).show();

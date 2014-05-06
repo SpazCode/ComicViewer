@@ -7,30 +7,46 @@
     <link href = "css/style.css" rel = "stylesheet">
   </head>
   <body>
-    <p class="overlay" id="page_count">/</p>
+    <div class="overlay" id="page_count">
+      <img src="img/spinner.gif">
+    </div>
     <div class="frame" id="image_display">
       <img class="image" id="current_image">
     </div>
     <div class = "helpscreen" id = "helpscreen">
       <strong>KEY BINDINGS</strong>
-        <div class = "row">
-          <div class = "col-xs-6 col-sm-6">
-            <ul class="list-group">
-              <li class="list-group-item:first-child"><b>First Page</b> : <span class="glyphicon glyphicon-step-backward"></span> : <b>F Key</b></li>
-              <li class="list-group-item"><b>Next Page</b> : <span class="glyphicon glyphicon-chevron-left"></span> : <b>Right Key</b></li>
-              <li class="list-group-item"><b>Previous Page</b> : <span class="glyphicon glyphicon-chevron-right"></span> : <b>Left Key</b></li>
-              <li class="list-group-item:last-child"><b>Last Page</b> : <span class="glyphicon glyphicon-step-forward"></span> : <b>L Key</b></li>
-            </ul>
-          </div>
-          <div class = "col-xs-6 col-sm-6">
-            <ul class="list-group">
-              <li class="list-group-item:first-child"><b>Open File</b> : <span class="glyphicon glyphicon-folder-open"></span> : <b>O Key</b></li>
-              <li class="list-group-item"><b>Zoom In</b> : <span class="glyphicon glyphicon-zoom-in"></span> : <b>+ or = Key</b></li>
-              <li class="list-group-item"><b>Zoom Out</b> : <span class="glyphicon glyphicon-zoom-out"></span> : <b>- or _ Key</b></li>
-              <li class="list-group-item:last-child"><b>Reset Image</b> : <span class="glyphicon glyphicon-repeat"></span> : <b>R Key</b></li>
-            </ul>
-          </div>  
+      <div class = "row">
+        <div class = "col-xs-6 col-sm-6">
+          <b>First Page</b> : <span class="glyphicon glyphicon-step-backward"></span> : <b>F Key</b>
         </div>
+        <div class = "col-xs-6 col-sm-6">
+          <b>Open File</b> : <span class="glyphicon glyphicon-folder-open"></span> : <b>O Key</b>
+        </div>
+      </div>
+      <div class = "row">
+        <div class = "col-xs-6 col-sm-6">
+          <b>Next Page</b> : <span class="glyphicon glyphicon-chevron-left"></span> : <b>Right Key</b>
+        </div>
+        <div class = "col-xs-6 col-sm-6">
+          <b>Zoom In</b> : <span class="glyphicon glyphicon-zoom-in"></span> : <b>+ or = Key</b>
+        </div>
+      </div>
+      <div class = "row">
+        <div class = "col-xs-6 col-sm-6">
+          <b>Previous Page</b> : <span class="glyphicon glyphicon-chevron-right"></span> : <b>Left Key</b>
+        </div>
+        <div class = "col-xs-6 col-sm-6">
+          <b>Zoom Out</b> : <span class="glyphicon glyphicon-zoom-out"></span> : <b>- or _ Key</b>
+        </div>
+      </div>
+      <div class = "row">
+        <div class = "col-xs-6 col-sm-6">
+          <b>Last Page</b> : <span class="glyphicon glyphicon-step-forward"></span> : <b>L Key</b>
+        </div>
+        <div class = "col-xs-6 col-sm-6">
+          <b>Reset Image</b> : <span class="glyphicon glyphicon-repeat"></span> : <b>R Key</b>
+        </div>
+      </div>
     </div>
     <div class = "controlbar" id = "menubar">	
       <div class = "container">
