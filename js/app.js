@@ -8,7 +8,7 @@ N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 
 EQUALS:187, ADD:107, UNDERSCORE:189, SUB:109};
 
 // Settings object
-var settings = {modeDisplay: 0, spread: 0, nextKey: 0, prevKey: 0, firstKey: 0, lastKey: 0, openKey: 0, settingKey: 0};
+var settings = {nextKey: 0, prevKey: 0, firstKey: 0, lastKey: 0, openKey: 0, settingKey: 0, helpKey: 0, gotokey: 0};
 
 // Settings Array of keys
 var settingKeys = ["modeDisplay", "spread", "nextKey", "prevKey", "firstKey", "lastKey", "openKey", "settingKey"];
@@ -25,6 +25,7 @@ var first = 0;
 var last = images.length;
 var displayMode = 0;
 var currentZoomLevel = 1;
+var loaded = false;
 
 // Set the menu to be visible
 $('#menubar').show();
@@ -173,6 +174,7 @@ function handleFile(file) {
           });
         unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.FINISH,
           function(e) {
+            loaded = true;
             console.log("Done Extracting, Begin Saving");
           });
         unarchiver.start();
@@ -259,6 +261,17 @@ $('#helpbtn').click(function(e) {
   toggleHelp();
 });
 
+$('#gotobtn').click(function(e) {
+  toggleGoto();
+});
+
+$('#pagesubmit').click(function(e) {
+  var page = $('#pagenumber').val();
+  console.log(page);
+  drawPanel(page);
+  toggleGoto();
+});
+
 function toggleHelp() {
   if($('#helpscreen').is(':hidden')) {
     $('#helpscreen').show();
@@ -267,16 +280,30 @@ function toggleHelp() {
   }
 }
 
+function toggleGoto() {
+  if (loaded) {
+    if($('#gotoscreen').is(':hidden')) {
+      $('#gotoscreen').show();
+      $('#gotoscreen').html('<input class="pagenumber" type="number" id="pagenumber" min="1" max="' + last + '"" maxlength="' + last.toString().length + '"> of ' + last + '<button type="button" class="btn btn-default btn-sm" id="pagesubmit">Go</button>');
+    } else {
+      $('#gotoscreen').hide();
+    }
+  }
+}
+
+// Goto the last page 
 function lastPanel() {
   if(curPanel != last - display) drawPanel(images.length - 1);
   console.log(curPanel);
 }
 
+// Goto to the previous page
 function prevPanel() {
   if(curPanel > first) drawPanel(curPanel - display);
   console.log(curPanel);
 }
 
+// Goto to the first page 
 function frstPanel() {
   if(curPanel != first) drawPanel(first);
   console.log(curPanel);
@@ -382,6 +409,7 @@ function reset() {
   curPanel = 0;
   first = 0;
   last = images.length;
+  loaded = false;
   drawPanel(curPanel);
   $('#frstbtn').click(null);
   $('#nextbtn').click(null);

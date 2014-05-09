@@ -17,7 +17,7 @@ body {
   height: 100%;
   margin: auto;
   text-align: center;
-  vertical-align:middle;
+  vertical-align: middle;
   position: relative;
 }
 
@@ -47,7 +47,7 @@ body {
     width: 52px;
     display: inline-block;
 }
-.helpscreen .cont2.end {
+.helpscreen .cont2 .end {
     margin-right: 30px;
 }
 .helpscreen .cont-help {
@@ -59,6 +59,26 @@ body {
   padding-left: 50px;
   margin-right: auto;
   margin-left: auto;
+}
+
+.gotoscreen {
+  width: 140px;
+  position: fixed;
+  top: 0px;
+  background: #FFF;
+  text-align: center;
+  padding: 5px 5px;
+  display: none;
+}
+
+.centerize { 
+  margin-left:40%;
+  margin-right:50%;
+  text-align: center;
+}
+
+.pagenumber {
+  width: 45px;
 }
 
 .controlbutton.left {
