@@ -26,6 +26,7 @@ var last = images.length;
 var displayMode = 0;
 var currentZoomLevel = 1;
 var loaded = false;
+var intcnt = 0;
 
 // Set the menu to be visible
 $('#menubar').show();
@@ -265,13 +266,6 @@ $('#gotobtn').click(function(e) {
   toggleGoto();
 });
 
-$('#pagesubmit').click(function(e) {
-  var page = $('#pagenumber').val();
-  console.log(page);
-  drawPanel(page);
-  toggleGoto();
-});
-
 function toggleHelp() {
   if($('#helpscreen').is(':hidden')) {
     $('#helpscreen').show();
@@ -285,8 +279,33 @@ function toggleGoto() {
     if($('#gotoscreen').is(':hidden')) {
       $('#gotoscreen').show();
       $('#gotoscreen').html('<input class="pagenumber" type="number" id="pagenumber" min="1" max="' + last + '"" maxlength="' + last.toString().length + '"> of ' + last + '<button type="button" class="btn btn-default btn-sm" id="pagesubmit">Go</button>');
+      $('#pagesubmit').click(function(e) {
+        var page = $('#pagenumber').val();
+        if(page <  images.length) {
+          drawPanel(parseInt(page) - 1);
+          toggleGoto();
+        } else {
+          var intrv = setInterval(function(){
+            intcnt++;
+            $('#pagenumber').attr('disabled','disabled');
+            if (intcnt == 1) {
+              $('#pagenumber').css("background-color", "red");
+            } else if (intcnt == 2) {
+              $('#pagenumber').css("background-color", "white");
+            } else if (intcnt == 2) {
+              $('#pagenumber').css("background-color", "red");
+            } else {
+              $('#pagenumber').css("background-color", "white");
+              intcnt = 0;
+              $('#pagenumber').removeAttr('disabled');
+              clearInterval(intrv);
+            }
+          },250);
+        }
+      });
     } else {
       $('#gotoscreen').hide();
+      $('#pagesubmit').unbind("click");
     }
   }
 }
