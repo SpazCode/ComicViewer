@@ -258,15 +258,19 @@ $('#lastbtn').click(function(e) {
   lastPanel();
 });
 
+// Helpscreen toggle
 $('#helpbtn').click(function(e) {
   toggleHelp();
 });
 
+// Goto toggle
 $('#gotobtn').click(function(e) {
   toggleGoto();
 });
 
+
 function toggleHelp() {
+  // Toggle the helpscreen's visibility
   if($('#helpscreen').is(':hidden')) {
     $('#helpscreen').show();
   } else {
@@ -275,16 +279,23 @@ function toggleHelp() {
 }
 
 function toggleGoto() {
+  // Only toggle goto if the book is fully loaded 
   if (loaded) {
+    // Toggle the goto input's visibility
     if($('#gotoscreen').is(':hidden')) {
       $('#gotoscreen').show();
+      // Insert the input ui
       $('#gotoscreen').html('<input class="pagenumber" type="number" id="pagenumber" min="1" max="' + last + '"" maxlength="' + last.toString().length + '"> of ' + last + '<button type="button" class="btn btn-default btn-sm" id="pagesubmit">Go</button>');
+      // Add function for the button 
       $('#pagesubmit').click(function(e) {
+        // Get value 
         var page = $('#pagenumber').val();
-        if(page <  images.length) {
+        // Only accepts values between 1 and the last page
+        if(page < images.length && page > 0) {
           drawPanel(parseInt(page) - 1);
           toggleGoto();
         } else {
+          // Flash red when the number us invaid
           var intrv = setInterval(function(){
             intcnt++;
             $('#pagenumber').attr('disabled','disabled');
@@ -304,6 +315,7 @@ function toggleGoto() {
         }
       });
     } else {
+      // Remove and unbind
       $('#gotoscreen').hide();
       $('#pagesubmit').unbind("click");
     }
