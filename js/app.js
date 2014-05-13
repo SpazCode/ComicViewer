@@ -8,7 +8,7 @@ N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 
 EQUALS:187, ADD:107, UNDERSCORE:189, SUB:109};
 
 // Settings object
-var settings = {nextKey: 0, prevKey: 0, firstKey: 0, lastKey: 0, openKey: 0, settingKey: 0, helpKey: 0, gotokey: 0};
+var settings = {nextKey: 0, prevKey: 0, frstKey: 0, lastKey: 0, openKey: 0, settingKey: 0, helpKey: 0, gotokey: 0};
 
 // Settings Array of keys
 var settingKeys = ["modeDisplay", "spread", "nextKey", "prevKey", "firstKey", "lastKey", "openKey", "settingKey"];

@@ -19,6 +19,8 @@ body {
   text-align: center;
   vertical-align: middle;
   position: relative;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .controlbar {
@@ -69,6 +71,17 @@ body {
   text-align: center;
   padding: 5px 5px;
   display: none;
+}
+
+.settingscreen {
+  width: 150px; 
+  height: -webkit-calc(100% - 45px);
+  position: fixed;
+  bottom: 45px;
+  background: #FFF;
+  text-align: center;
+  padding: 5px 5px;
+  /* display: none; */
 }
 
 .centerize { 
