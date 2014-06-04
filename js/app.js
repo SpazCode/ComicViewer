@@ -8,10 +8,11 @@ N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 
 EQUALS:187, ADD:107, UNDERSCORE:189, SUB:109};
 
 // Settings object
-var settings = {nextKey: 0, prevKey: 0, frstKey: 0, lastKey: 0, openKey: 0, settingKey: 0, helpKey: 0, gotokey: 0};
+var settings = {nextKey: 0, prevKey: 0, frstKey: 0, lastKey: 0, 
+  openKey: 0, settingKey: 0, helpKey: 0, gotoKey: 0};
 
 // Settings Array of keys
-var settingKeys = ["modeDisplay", "spread", "nextKey", "prevKey", "firstKey", "lastKey", "openKey", "settingKey"];
+var settingStrings = ["nextKey", "prevKey", "firstKey", "lastKey", "openKey", "settingKey", "helpKey", "gotoKey"];
 
 //--------------------------------------------------
 // Variables
@@ -39,7 +40,7 @@ function errorHandler(e) {
 
 // Generic Setting handler for the app
 function saveSettings() {
-  chrome.storage.local.set({'spread':display, 'displayMode': displayMode}, function() {
+  chrome.storage.local.set(settings, function() {
     message("saved");
   });
 }
@@ -350,7 +351,7 @@ function zoomon() {
     $zoomIn    : $('#zoominbtn'),
     $zoomOut   : $('#zoomoutbtn'),
     $reset     : $("#resetbtn"),
-    maxScale   : 3,
+    maxScale   : 4,
   });
 }
 
@@ -424,6 +425,9 @@ function keyHandler(evt) {
       break;
     case Key.X:
       hideControls();
+      break;
+    case Key.Q:
+      document.body.webkitRequestFullscreen();
       break;
     default:
       console.log("KeyCode = " + code);
