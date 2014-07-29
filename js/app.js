@@ -96,7 +96,7 @@ function onInitFs(fs) {
   console.log('onInitFs done, new');
 }
 
-// Draf and droop contols
+// Drag and drop contols
 function dragOverHandler(e) {
   e.preventDefault();
 }
@@ -247,7 +247,7 @@ var createURLFromArray = function(array, mimeType) {
 
 }*/
 
-// Gallary controls
+// Gallery controls
 $('#frstbtn').click(function(e) {
   e.preventDefault();
   frstPanel();
@@ -305,7 +305,7 @@ function toggleGoto() {
           drawPanel(parseInt(page) - 1);
           toggleGoto();
         } else {
-          // Flash red when the number us invaid
+          // Flash red when the number us invalid
           var intrv = setInterval(function(){
             intcnt++;
             $('#pagenumber').attr('disabled','disabled');
@@ -397,7 +397,7 @@ function drawPanel(num) {
   });
 }
 
-// Handeler for keyboard controls 
+// Handler for keyboard controls 
 function keyHandler(evt) {
   var code = evt.keyCode;
   if (code == Key.O) {
@@ -479,4 +479,16 @@ function reset() {
 function hideControls() {
   if($('#menubar').is(":visible")) $('#menubar').hide();
   else $('#menubar').show();
+<<<<<<< HEAD
 }
+=======
+}
+
+// initialize settings on winow load
+window.onload = init();
+
+// Adapting the image size on window resize
+$(window).resize(function() {
+  drawPanel(curPanel);
+});
+>>>>>>> b7d10ed5f24d241a028f4316d9759e324f6f1cba
