@@ -24,11 +24,16 @@ body {
 }
 
 .controlbar {
+  opacity: 0.25;
   width: 100%;
   height: 45px;
   position:fixed;
   bottom: 0;
   background: #FFF;
+}
+
+.controlbar:hover {
+  opacity: 1;
 }
 
 .helpscreen {
@@ -39,6 +44,7 @@ body {
   display: none;
   font-weight: bold;
 }
+
 .helpscreen .cont {
     bottom: 45px;
     width: 52px;
@@ -74,6 +80,7 @@ body {
 }
 
 .settingscreen {
+  opacity: 0.5;
   width: 150px; 
   height: -webkit-calc(100% - 45px);
   position: fixed;

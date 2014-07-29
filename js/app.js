@@ -9,7 +9,8 @@ EQUALS:187, ADD:107, UNDERSCORE:189, SUB:109};
 
 // Settings object
 var settings = {nextKey: 0, prevKey: 0, frstKey: 0, lastKey: 0, 
-  openKey: 0, settingKey: 0, helpKey: 0, gotoKey: 0};
+                openKey: 0, settingKey: 0, helpKey: 0, gotoKey: 0, 
+                panReset: true, zoomReset: true};
 
 // Settings Array of keys
 var settingStrings = ["nextKey", "prevKey", "firstKey", "lastKey", "openKey", "settingKey", "helpKey", "gotoKey"];
@@ -32,6 +33,16 @@ var intcnt = 0;
 // Set the menu to be visible
 $('#menubar').show();
 
+// initilize settings on winow load
+window.onload = function () { 
+  init(); 
+}
+
+// Adapting the image size on window resize
+$(window).resize(function() {
+  drawPanel(curPanel);
+});
+
 //Generic error handler
 function errorHandler(e) {
   console.log("*** ERROR ***");
@@ -51,6 +62,11 @@ function loadSettings() {
       settings[key] = result;
     });
   }
+}
+
+function resetSettings() {
+  if(settings.zoomReset) $('#image_display img').panzoom("resetZoom");
+  if(settings.panReset) $('#image_display img').panzoom("resetPan");
 }
 
 var ImageFile = function(file) {
@@ -110,6 +126,7 @@ $('#openbtn').click(function(e) {
   openFile();
 });
 
+// Handler for the interface to opening files
 function openFile() {
   console.log("Choose file\n");
   var accepts = [{
@@ -188,7 +205,7 @@ function handleFile(file) {
   }
 }
 
-
+// Creates the src for the images  in the comic viewer
 var createURLFromArray = function(array, mimeType) {
   var offset = array.byteOffset, len = array.byteLength;
   var bb, url;
@@ -233,29 +250,21 @@ var createURLFromArray = function(array, mimeType) {
 // Gallary controls
 $('#frstbtn').click(function(e) {
   e.preventDefault();
-  $('#image_display img').panzoom("resetZoom");
-  $('#image_display img').panzoom("resetPan");
   frstPanel();
 });
 
 $('#nextbtn').click(function(e) {
   e.preventDefault();
-  $('#image_display img').panzoom("resetZoom");
-  $('#image_display img').panzoom("resetPan");
   nextPanel();
 });
 
 $('#prevbtn').click(function(e) {
   e.preventDefault();
-  $('#image_display img').panzoom("resetZoom");
-  $('#image_display img').panzoom("resetPan");
   prevPanel();
 });
 
 $('#lastbtn').click(function(e) {
   e.preventDefault();
-  $('#image_display img').panzoom("resetZoom");
-  $('#image_display img').panzoom("resetPan");
   lastPanel();
 });
 
@@ -269,7 +278,7 @@ $('#gotobtn').click(function(e) {
   toggleGoto();
 });
 
-
+// Function to toggle the help screen
 function toggleHelp() {
   // Toggle the helpscreen's visibility
   if($('#helpscreen').is(':hidden')) {
@@ -325,23 +334,27 @@ function toggleGoto() {
 
 // Goto the last page 
 function lastPanel() {
+  resetSettings();
   if(curPanel != last - display) drawPanel(images.length - 1);
   console.log(curPanel);
 }
 
 // Goto to the previous page
 function prevPanel() {
+  resetSettings();
   if(curPanel > first) drawPanel(curPanel - display);
   console.log(curPanel);
 }
 
 // Goto to the first page 
 function frstPanel() {
+  resetSettings();
   if(curPanel != first) drawPanel(first);
   console.log(curPanel);
 }
 
 function nextPanel() {
+  resetSettings();
   if(curPanel+display < images.length) drawPanel(curPanel + display);
   console.log(curPanel);
 }
@@ -398,6 +411,12 @@ function keyHandler(evt) {
       break;
     case Key.RIGHT:
       nextPanel();
+      break;
+    case Key.UP:
+      $('#image_display img').panzoom("pan", 0, 25, {relative: true});
+      break;
+    case Key.DOWN:
+      $('#image_display img').panzoom("pan", 0, -25, {relative: true});
       break;
     case Key.ADD:
       $('#zoominbtn').click();
@@ -461,11 +480,3 @@ function hideControls() {
   if($('#menubar').is(":visible")) $('#menubar').hide();
   else $('#menubar').show();
 }
-
-// initilize settings on winow load
-window.onload = init();
-
-// Adapting the image size on window resize
-$(window).resize(function() {
-  drawPanel(curPanel);
-});
