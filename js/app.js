@@ -230,7 +230,7 @@ var createURLFromArray = function(array, mimeType) {
 
 }*/
 
-// Gallary controls
+// Gallery controls
 $('#frstbtn').click(function(e) {
   e.preventDefault();
   $('#image_display img').panzoom("resetZoom");
@@ -296,7 +296,7 @@ function toggleGoto() {
           drawPanel(parseInt(page) - 1);
           toggleGoto();
         } else {
-          // Flash red when the number us invaid
+          // Flash red when the number us invalid
           var intrv = setInterval(function(){
             intcnt++;
             $('#pagenumber').attr('disabled','disabled');
@@ -384,7 +384,7 @@ function drawPanel(num) {
   });
 }
 
-// Handeler for keyboard controls 
+// Handler for keyboard controls 
 function keyHandler(evt) {
   var code = evt.keyCode;
   if (code == Key.O) {
@@ -462,7 +462,7 @@ function hideControls() {
   else $('#menubar').show();
 }
 
-// initilize settings on winow load
+// initialize settings on winow load
 window.onload = init();
 
 // Adapting the image size on window resize
