@@ -80,7 +80,7 @@ function onInitFs(fs) {
   console.log('onInitFs done, new');
 }
 
-// Draf and droop contols
+// Drag and drop contols
 function dragOverHandler(e) {
   e.preventDefault();
 }
