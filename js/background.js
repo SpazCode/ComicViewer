@@ -5,7 +5,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
   var height = Math.floor(screenHeight*(7/8));
   chrome.app.window.create('index.html', {
     'id':'ImageWin',
-    frame: 'chrome',
+    frame: 'frame',
     width: width,
     height: height,
     minWidth: 700,

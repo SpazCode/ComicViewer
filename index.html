@@ -1,54 +1,50 @@
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
-<html lang="en-US">
-  <head>
-    <meta charset="UFT-8">
-    <title>Comic Viewer</title>
-    <link href = "css/bootstrap.css" rel = "stylesheet">
-    <link href = "css/style.css" rel = "stylesheet"/>
-  </head>
-  <body>
+<!DOCTYPE html>
+<html data-ng-app="comicviewer" data-ng-csp="">
 
-    <div class="overlay" id="page_count">
-      <img src="img/spinner.gif">
-    </div>
-    <div class="frame" id="image_display">
-      <img class="image" id="current_image">
-    </div>
-    
-    <div class="centerize gotoscreen" id= "gotoscreen">
-    </div>
-
-    <div class="helpscreen" id = "helpscreen">
-      <div class = "container">
-        <div class = "cont pull-left">(F) <br> First Page</div>
-        <div class = "cont pull-left">(&larr;) <br> Prev. Page</div>
-        <div class = "cont pull-left">(&rarr;) <br> Next Page</div>
-        <div class = "cont pull-left">(L) <br> Last Page</div>
-        <div class = "cont2 end pull-right">(R) <br> Reset Image</div>
-        <div class = "cont2 pull-right">(+ or =) <br> Zoom Out</div>
-        <div class = "cont2 pull-right">(- or _) <br> Zoom In</div>
-        <div class = "cont2 pull-right">(O) <br> Open File</div>
-        <div class = "cont2">Goto Page</div>
-        <div class = "cont-help">Help</div>
-      </div>
-    </div>
-    <div class = "controlbar" id = "menubar">	
-      <div class = "container">
-        <button type="button" class="btn btn-default btn-lg pull-left" id="frstbtn"><span class="glyphicon glyphicon-step-backward"></span></button>
-        <button type="button" class="btn btn-default btn-lg pull-left" id="prevbtn"><span class="glyphicon glyphicon-chevron-left"></span></button>
-        <button type="button" class="btn btn-default btn-lg pull-left" id="nextbtn"><span class="glyphicon glyphicon-chevron-right"></span></button>
-        <button type="button" class="btn btn-default btn-lg pull-left" id="lastbtn"><span class="glyphicon glyphicon-step-forward"></span></button>
-        <button type="button" class="btn btn-default btn-lg pull-right" id="resetbtn"><span class="glyphicon glyphicon-repeat"></span></button>
-        <button type="button" class="btn btn-default btn-lg pull-right" id="zoomoutbtn"><span class="glyphicon glyphicon-zoom-out"></span></button>
-        <button type="button" class="btn btn-default btn-lg pull-right" id="zoominbtn"><span class="glyphicon glyphicon-zoom-in"></span></button>
-        <button type="button" class="btn btn-default btn-lg pull-right" id="openbtn"><span class="glyphicon glyphicon-folder-open"></span></button>
-        <button type="button" class="btn btn-default btn-lg" id="gotobtn"><span class="glyphicon glyphicon-search"></span></button>
-        <button type="button" class="btn btn-default btn-lg" id="helpbtn"><span class="glyphicon glyphicon-question-sign"></span></button>
-      </div>
-    </div> 
+<head>
+    <link rel="stylesheet" type="text/css" href="css/angular-material.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script type="application/javascript" src="js/angular/angular.min.js"></script>
+    <script type="application/javascript" src="js/angular/angular-aria.min.js"></script>
+    <script type="application/javascript" src="js/angular/angular-animate.min.js"></script>
+    <script type="application/javascript" src="js/angular/angular-material.min.js"></script>
+    <script type="application/javascript" src="js/angular/angular-messages.min.js"></script>
     <script type="application/javascript" src="js/bitjs/archive.js"></script>
-    <script type="application/javascript" src="js/jquery.js"></script>
-    <script type="application/javascript" src="js/jquery-panzoom.js"></script>
     <script type="application/javascript" src="js/app.js"></script>
-  </body>
+    <base target="_blank">
+</head>
+
+<body data-ng-controller="MainCtrl" data-ng-init="init()">
+    <div layout="row" flex>
+        <md-toolbar class="md-hue-2">
+            <div class="md-toolbar-tools docs-toolbar-tools">
+                <button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="openNav()">
+                    <md-icon md-svg-icon="img/icons/ic_menu_24px.svg"></md-icon>
+                    <div class="md-ripple-container"></div>
+                </button>
+                <h3>{{ file.name }}</h3>
+            </div>
+        </md-toolbar>
+        <md-sidenav class="md-sidenav-left" md-component-id="main" md-whiteframe="4">
+            <md-toolbar class="md-hue-2">
+                <h1 class="md-toolbar-tools">Comic Viewer</h1>
+            </md-toolbar>
+            <md-content layout-padding>
+                <md-button ng-click="openFile()" class="md-primary">
+                    Open
+                </md-button>
+                </br>
+                <md-button ng-click="closeApp" class="md-primary">
+                    Close
+                </md-button>
+            </md-content>
+        </md-sidenav>
+    </div>
+    <md-content flex="100" layout-align="center">
+        <md-content layout-align="center" ng-repeat="i in images" layout-padding>
+            <img ng-src="{{i.image.dataURI}}">
+        </md-content>
+    </div>
+</body>
+
 </html>

@@ -1,174 +1,26 @@
-body {
-  width: 100%;
-  height: 100%;
-  overflow:auto;
-  background: #333;
+#close-button {
+    float: right;
+    padding: 0 5px 2px 5px;
+    font-weight: bold;
+    opacity: 0.7;
+    transition: all 0.3s ease-in-out;
+}
+
+.menuBardemoBasicUsage .page-container {
+  padding: 32px; }
+
+.menuBardemoBasicUsage .page {
+  margin: 0 auto;
+  padding: 24px;
+  max-width: 680px;
+  box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.25); }
+
+.menuBardemoBasicUsage .page h1 {
   text-align: center;
-}
+  font-size: 1.8rem;
+  margin-top: 0;
+  font-weight: normal; }
 
-.frame {
-  width: 100%;
-  height: 100%;
-  text-align: center;
-}
+.menuBardemoBasicUsage .page p {
+  line-height: 1.6rem; }
 
-.image {
-  max-width: 100%;
-  height: 100%;
-  margin: auto;
-  text-align: center;
-  vertical-align: middle;
-  position: relative;
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.controlbar {
-  opacity: 0.25;
-  width: 100%;
-  height: 45px;
-  position:fixed;
-  bottom: 0;
-  background: #FFF;
-}
-
-.controlbar:hover {
-  opacity: 1;
-}
-
-.helpscreen {
-  width: inherit;
-  position: fixed;
-  bottom: 45px;
-  background: #FFF;
-  display: none;
-  font-weight: bold;
-}
-
-.helpscreen .cont {
-    bottom: 45px;
-    width: 52px;
-    display: inline-block;
-}
-.helpscreen .cont2{
-    bottom: 45px;
-    width: 52px;
-    display: inline-block;
-}
-.helpscreen .cont2 .end {
-    margin-right: 30px;
-}
-.helpscreen .cont-help {
-    margin-left: -2px;
-    display: inline-block;
-}
-.container2 {
-  padding-right: 50px;
-  padding-left: 50px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.gotoscreen {
-  width: 140px;
-  position: fixed;
-  top: 0px;
-  background: #FFF;
-  text-align: center;
-  padding: 5px 5px;
-  display: none;
-}
-
-.settingscreen {
-  opacity: 0.5;
-  width: 150px; 
-  height: -webkit-calc(100% - 45px);
-  position: fixed;
-  bottom: 45px;
-  background: #FFF;
-  text-align: center;
-  padding: 5px 5px;
-  /* display: none; */
-}
-
-.centerize { 
-  margin-left:40%;
-  margin-right:50%;
-  text-align: center;
-}
-
-.pagenumber {
-  width: 45px;
-}
-
-.controlbutton.left {
-  display: block;
-  padding: 6px 5px;
-  float: left;
-  background:#FFF;
-  text-decoration: none !important;
-  color:#000;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
-
-.controlbutton.left:hover {
-  display: block;
-  padding: 6px 5px;
-  float:left;
-  background:#555;
-  text-decoration: none !important;
-  color:#000;
-  cursor: pointer;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
-
-.controlbutton.right {
-  display: block;
-  padding: 6px 5px;
-  float:right;
-  background:#FFF;
-  text-decoration: none !important;
-  color:#000;
-  border: 1px solid transparent;
-  border-radius: 4px; 
-}
-
-.controlbutton.right:hover {
-  display: block;
-  padding: 6px 5px;
-  float:right;
-  background:#555;
-  text-decoration: none !important;
-  color:#000;
-  cursor: pointer;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
-
-.progressbar {
-  display: inline-block;
-  background-color: black;
-  border-radius: 13px; /* (height of inner div) / 2 + padding */
-  padding: 3px 3px;
-}
-
-.progressbar > div {
-   background-color: orange;
-   width: 100%; /* Adjust with JavaScript */
-   height: 10px;
-   border-radius: 10px;
-}
-
-.overlay {
-  z-index:100;
-  position:fixed;    
-  color:white;
-  font-size:24px;
-  font-weight:bold;
-  top:0;
-  left:25;
-  background-color: #000;
-  opacity: 0.4;
-}
