@@ -1,7 +1,8 @@
 'use strict';
 
 var app = angular.module('comicviewer', [
-    'ngMaterial'
+    'ngMaterial',
+    'ngBasicGallary'
 ]);
 
 app.config(function($mdIconProvider) {
@@ -12,8 +13,11 @@ app.config(function($mdIconProvider) {
 app.controller('MainCtrl', function($scope, $mdSidenav, $log) {
     $scope.images = [];
     $scope.file = null;
+    $scope.gallaryMode = true;
     $scope.processing = 0;
     $scope.processingDone = false;
+    $scope.zoomMax = 2.5;
+    $scope.autoFit = true;
 
     $scope.openNav = function() {
         $mdSidenav("main").toggle().then(function() {
@@ -166,8 +170,8 @@ app.controller('MainCtrl', function($scope, $mdSidenav, $log) {
                     unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.FINISH,
                         function(e) {
                             console.log("Done Extracting, Begin Saving");
-                            console.log(images);
                             $scope.images = images;
+                            $scope.toPage(0);
                             $scope.$apply();
                         });
                     unarchiver.start();

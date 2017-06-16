@@ -4,12 +4,15 @@
 <head>
     <link rel="stylesheet" type="text/css" href="css/angular-material.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/material-icons.css">
+    <script type="application/javascript" src="js/jquery/jquery.min.js"></script>
     <script type="application/javascript" src="js/angular/angular.min.js"></script>
     <script type="application/javascript" src="js/angular/angular-aria.min.js"></script>
     <script type="application/javascript" src="js/angular/angular-animate.min.js"></script>
     <script type="application/javascript" src="js/angular/angular-material.min.js"></script>
     <script type="application/javascript" src="js/angular/angular-messages.min.js"></script>
     <script type="application/javascript" src="js/bitjs/archive.js"></script>
+    <script type="application/javascript" src="js/gallary.js"></script>
     <script type="application/javascript" src="js/app.js"></script>
     <base target="_blank">
 </head>
@@ -19,7 +22,7 @@
         <md-toolbar class="md-hue-2">
             <div class="md-toolbar-tools docs-toolbar-tools">
                 <button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="openNav()">
-                    <md-icon md-svg-icon="img/icons/ic_menu_24px.svg"></md-icon>
+                    <i class="material-icons">menu</i>
                     <div class="md-ripple-container"></div>
                 </button>
                 <h3>{{ file.name }}</h3>
@@ -34,15 +37,30 @@
                     Open
                 </md-button>
                 </br>
-                <md-button ng-click="closeApp" class="md-primary">
+                <md-button ng-click="closeApp()" class="md-primary">
                     Close
                 </md-button>
+                </br>
+                <md-checkbox ng-model="autoFit" aria-label="AutoScale">
+                    <md-tooltip md-direction="right">Fit pages when you switch to a new page</md-tooltip>
+                    Auto Scale
+                </md-checkbox>
             </md-content>
         </md-sidenav>
     </div>
     <md-content flex="100" layout-align="center">
-        <md-content layout-align="center" ng-repeat="i in images" layout-padding>
-            <img ng-src="{{i.image.dataURI}}">
+        <md-content layout-align="center" ng-show="gallaryMode">
+            <image-gallary
+                images="images"
+                fit="fit"
+                next="next"
+                prev="prev"
+                zoomin="zoomIn"
+                zoomout="zoomOut"
+                topage="toPage"
+                zoommax="zoomMax"
+                autofit="autoFit"
+            ></image-gallary>
         </md-content>
     </div>
 </body>
