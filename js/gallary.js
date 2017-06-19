@@ -1,12 +1,13 @@
 'use strict';
 
-var app = angular.module('ngBasicGallary', []);
+var app = angular.module('ngBasicGallary', ['ngMaterial']);
 
 app.directive('imageGallary', function() {
     return {
         restrict: 'AE',
         replace: 'true',
         scope: {
+            reset: '=',
             images: '=',
             fit: '=',
             next: '=',
@@ -17,7 +18,7 @@ app.directive('imageGallary', function() {
             zoommax: '=',
             autofit: '='
         },
-        controller: function($scope, $interval) {
+        controller: function($scope, $interval, $mdDialog) {
             // Data Variables
             $scope.canvas = $("#viewer").get(0);
             $scope.context = $scope.canvas.getContext("2d");
@@ -32,20 +33,33 @@ app.directive('imageGallary', function() {
                 sX: 0,
                 sY: 0,
                 scale: 1
-            };
+            };            
             $scope.curPage = 0;
+            $scope.userInput = {};
+            $scope.userInput.pageToGo = $scope.curPage;
             $scope.lastFrontImage = "";
+            $scope.showPageCount = false;
+            $scope.showGoToForm = false;
 
             // Functionality
+            $scope.imageData.image.onload = function() {
+                if ($scope.autofit) $scope.fit();
+            }
+
             function render() {
-                $scope.canvas.width  = window.innerWidth;
+                if ($scope.images.length > 0) $scope.showPageCount = true;
+                else $scope.showPageCount = false;
+                $scope.canvas.width = window.innerWidth;
                 $scope.canvas.height = window.innerHeight;
                 $scope.context.save();
                 $scope.context.setTransform(1, 0, 0, 1, 0, 0);
                 $scope.context.clearRect(0, 0, $scope.canvas.width, $scope.canvas.height);
                 $scope.context.restore();
                 if ($scope.images.length > 0) {
-                    $scope.imageData.image.src = $scope.images[$scope.curPage].image.dataURI;
+                    if ($scope.reset) {
+                        $scope.reset = false;
+                        $scope.imageData.image.src = $scope.images[$scope.curPage].image.dataURI;
+                    }
                     $scope.context.drawImage(
                         $scope.imageData.image,
                         $scope.imageData.cX,
@@ -88,21 +102,24 @@ app.directive('imageGallary', function() {
             $scope.next = function() {
                 if ($scope.curPage < $scope.images.length) {
                     $scope.curPage++;
-                    if($scope.autofit) $scope.fit();
+                    $scope.imageData.image.src = $scope.images[$scope.curPage].image.dataURI;
+
                 }
             }
 
             $scope.prev = function() {
                 if ($scope.curPage > 0) {
                     $scope.curPage--;
-                    if($scope.autofit) $scope.fit();
+                    $scope.imageData.image.src = $scope.images[$scope.curPage].image.dataURI;
+
                 }
             }
 
             $scope.topage = function(page) {
                 if (page < $scope.images.length && page >= 0) {
                     $scope.curPage = page;
-                    if($scope.autofit) $scope.fit();
+                    $scope.imageData.image.src = $scope.images[$scope.curPage].image.dataURI;
+
                 }
             }
 
@@ -135,6 +152,17 @@ app.directive('imageGallary', function() {
                 $scope.imageData.sY = cY;
                 render();
             }
+
+            $scope.goToPageToogle = function() {
+                $scope.showGoToForm = !$scope.showGoToForm;
+                $scope.userInput.pageToGo = $scope.curPage + 1;
+            }
+
+            $scope.switchpage = function() {
+                $scope.showGoToForm = false;
+                console.log($scope.userInput.pageToGo);
+                $scope.topage($scope.userInput.pageToGo - 1);
+            }
         },
         template: `<div>
                      <div layout="row" class="menubar">
@@ -153,6 +181,20 @@ app.directive('imageGallary', function() {
                         <button class="md-button fit-button md-ink-ripple" type="button" ng-click="next()">
                             <i class="material-icons" style="font-size:48px;">chevron_right</i>
                         </button>
+                     </div>
+                     <div layout="row" class="page-count" ng-if="showPageCount && !showGoToForm" ng-click="goToPageToogle()">
+                        <md-tooltip md-direction="right">Click to GoTo Page</md-tooltip>
+                        <strong> {{curPage+1}} / {{images.length}}</strong>
+                     </div>
+                     <div layout="row" class="page-count" ng-if="showPageCount && showGoToForm">
+                        <strong>
+                            <input type="number" step="1" name="rate" ng-model="userInput.pageToGo" min="1"
+                            max="{{images.length}}"/>
+                            / {{images.length}} 
+                        <md-button class="md-icon-button md-primary" aria-label="Go" ng-click="switchpage()">
+                            <i class="material-icons">launch</i>
+                        </md-button>
+                        </strong>
                      </div>
                      <canvas id="viewer" class="image-viewer"></canvas>
                    </div>

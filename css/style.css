@@ -38,17 +38,29 @@
 .menubar {
     top: 90%;
     left: 50%;
+    opacity: 0.33;
     position: absolute;
     transform: translate(-50%, -50%);
     background-color: rgba(158, 167, 184, 0.5);
 }
 
+.menubar:hover {
+    opacity: 1;
+}
+
 .page-count {
-    top: 10%;
-    left: 80%;
+    opacity: 0.45;
     position: absolute;
-    transform: translate(-50%, -50%);
     background-color: rgba(158, 167, 184, 0.5);
+}
+
+.page-count:hover {
+    opacity: 1;
+}
+
+.page-count strong {
+    font-size: 25px;
+    white-space: nowrap;
 }
 
 .fit-button {

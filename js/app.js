@@ -18,6 +18,11 @@ app.controller('MainCtrl', function($scope, $mdSidenav, $log) {
     $scope.processingDone = false;
     $scope.zoomMax = 2.5;
     $scope.autoFit = true;
+    $scope.reset = false;
+    $scope.loading = {};
+    $scope.loading.extracting = false;
+    $scope.loading.total = 0;
+    $scope.loading.curr = 0;
 
     $scope.openNav = function() {
         $mdSidenav("main").toggle().then(function() {
@@ -145,10 +150,10 @@ app.controller('MainCtrl', function($scope, $mdSidenav, $log) {
                 if (unarchiver) {
                     unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.PROGRESS,
                         function(e) {
+                            $scope.loading.extracting = true;
+                            $scope.loading.total = e.totalUncompressedBytesInArchive;
+                            $scope.loading.curr = e.currentBytesUnarchived;
                             var percentage = e.currentBytesUnarchived / e.totalUncompressedBytesInArchive;
-                            $scope.processing = percentage;
-                            // last = e.totalFilesInArchive;
-                            // lastCompletion = percentage * 100;
                         });
                     unarchiver.addEventListener(bitjs.archive.UnarchiveEvent.Type.INFO,
                         function(e) {
@@ -172,6 +177,8 @@ app.controller('MainCtrl', function($scope, $mdSidenav, $log) {
                             console.log("Done Extracting, Begin Saving");
                             $scope.images = images;
                             $scope.toPage(0);
+                            $scope.reset = true;
+                            $scope.loading.extracting = false;
                             $scope.$apply();
                         });
                     unarchiver.start();

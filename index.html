@@ -40,7 +40,7 @@
                 <md-button ng-click="closeApp()" class="md-primary">
                     Close
                 </md-button>
-                </br>
+                <md-divider></md-divider>
                 <md-checkbox ng-model="autoFit" aria-label="AutoScale">
                     <md-tooltip md-direction="right">Fit pages when you switch to a new page</md-tooltip>
                     Auto Scale
@@ -48,9 +48,13 @@
             </md-content>
         </md-sidenav>
     </div>
+    <div class="container" ng-if="loading.extracting">
+        <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+    </div>
     <md-content flex="100" layout-align="center">
         <md-content layout-align="center" ng-show="gallaryMode">
             <image-gallary
+                reset="reset"
                 images="images"
                 fit="fit"
                 next="next"
