@@ -10,7 +10,13 @@ app.config(function($mdIconProvider) {
         .defaultIconSet('js/bower_components/material-design-icons/iconfont/MaterialIcons-Regular.svg', 24);
 });
 
-app.controller('MainCtrl', function($scope, $mdSidenav, $log) {
+app.config(function($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+        .primaryPalette('red')
+        .accentPalette('yellow');
+});
+
+app.controller('MainCtrl', function($scope, $mdSidenav, $log, $mdDialog) {
     $scope.images = [];
     $scope.file = null;
     $scope.gallaryMode = true;
@@ -29,6 +35,33 @@ app.controller('MainCtrl', function($scope, $mdSidenav, $log) {
             $log.debug("toggle main nav");
         });
     };
+
+    $scope.showAlert = function(ev) {
+        $mdDialog.show(
+            $mdDialog.alert()
+            // .parent(angular.element(document.querySelector('#popupContainer')))
+            .clickOutsideToClose(true)
+            .title('About')
+            .textContent('Comic Viewer v2')
+            .ariaLabel('About')
+            .ok('OK')
+            .targetEvent(ev)
+        );
+    };
+
+    $scope.editShortcuts = function(ev) {
+        $mdDialog.show(
+            $mdDialog.alert()
+            // .parent(angular.element(document.querySelector('#popupContainer')))
+            .clickOutsideToClose(true)
+            .title('About')
+            .textContent('Comic Viewer v2')
+            .ariaLabel('About')
+            .ok('OK')
+            .targetEvent(ev)
+        );
+    };
+
 
     $scope.openFile = function() {
         console.log("Choose file\n");

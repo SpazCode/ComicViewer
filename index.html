@@ -33,13 +33,11 @@
                 <h1 class="md-toolbar-tools">Comic Viewer</h1>
             </md-toolbar>
             <md-content layout-padding>
-                <md-button ng-click="openFile()" class="md-primary">
-                    Open
-                </md-button>
+                <md-button ng-click="openFile()" class="md-primary">Open</md-button>
                 </br>
-                <md-button ng-click="closeApp()" class="md-primary">
-                    Close
-                </md-button>
+                <md-button ng-click="showAlert()" class="md-primary">About</md-button>
+                </br>
+                <md-button ng-click="closeApp()" class="md-primary">Close</md-button>
                 <md-divider></md-divider>
                 <md-checkbox ng-model="autoFit" aria-label="AutoScale">
                     <md-tooltip md-direction="right">Fit pages when you switch to a new page</md-tooltip>
@@ -64,6 +62,8 @@
                 topage="toPage"
                 zoommax="zoomMax"
                 autofit="autoFit"
+                getshortcuts="getShortcuts"
+                setshortcuts="setShortcuts"
             ></image-gallary>
         </md-content>
     </div>
